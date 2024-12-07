@@ -67,13 +67,13 @@ public final class TuningOpModes {
                     rightEncs.add(dl.rightBack);
                 } else if (md.localizer instanceof ThreeDeadWheelLocalizer) {
                     ThreeDeadWheelLocalizer dl = (ThreeDeadWheelLocalizer) md.localizer;
-                    parEncs.add(dl.par0);
-                    parEncs.add(dl.par1);
-                    perpEncs.add(dl.perp);
+                    parEncs.add(dl.rightBack);
+                    parEncs.add(dl.rightFront);
+                    perpEncs.add(dl.leftBack);
                 } else if (md.localizer instanceof TwoDeadWheelLocalizer) {
                     TwoDeadWheelLocalizer dl = (TwoDeadWheelLocalizer) md.localizer;
                     parEncs.add(dl.par);
-                    perpEncs.add(dl.perp);
+                    perpEncs.add(dl.leftBack);
                 } else {
                     throw new RuntimeException("unknown localizer: " + md.localizer.getClass().getName());
                 }
@@ -116,13 +116,13 @@ public final class TuningOpModes {
                     rightEncs.addAll(dl.rightEncs);
                 } else if (td.localizer instanceof ThreeDeadWheelLocalizer) {
                     ThreeDeadWheelLocalizer dl = (ThreeDeadWheelLocalizer) td.localizer;
-                    parEncs.add(dl.par0);
-                    parEncs.add(dl.par1);
-                    perpEncs.add(dl.perp);
+                    parEncs.add(dl.rightBack);
+                    parEncs.add(dl.rightFront);
+                    perpEncs.add(dl.leftBack);
                 } else if (td.localizer instanceof TwoDeadWheelLocalizer) {
                     TwoDeadWheelLocalizer dl = (TwoDeadWheelLocalizer) td.localizer;
                     parEncs.add(dl.par);
-                    perpEncs.add(dl.perp);
+                    perpEncs.add(dl.leftBack);
                 } else {
                     throw new RuntimeException("unknown localizer: " + td.localizer.getClass().getName());
                 }

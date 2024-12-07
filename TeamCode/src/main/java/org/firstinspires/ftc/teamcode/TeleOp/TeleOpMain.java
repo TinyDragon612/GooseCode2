@@ -25,7 +25,7 @@ public class TeleOpMain extends LinearOpMode {
 
     private DcMotorEx right, left, x_slide1, x_slide2, hang; //slides
 
-    private ServoImplEx back1, back2, front1, front2, extend1, extend2;
+    private ServoImplEx backR, backL, frontR, frontL, extend1, extend2;
 
     private int errorBound = 60;
     int height;
@@ -61,10 +61,10 @@ public class TeleOpMain extends LinearOpMode {
         right = hardwareMap.get(DcMotorEx.class, "right");
         left = hardwareMap.get(DcMotorEx.class, "left");
         hang = hardwareMap.get(DcMotorEx.class, "hang");
-//        back1 = hardwareMap.get(ServoImplEx.class, "back1");
-//        back2 = hardwareMap.get(ServoImplEx.class, "back2");
-//        front1 = hardwareMap.get(ServoImplEx.class, "front1");
-//        front2 = hardwareMap.get(ServoImplEx.class, "front2");
+        backR = hardwareMap.get(ServoImplEx.class, "backR");
+        backL = hardwareMap.get(ServoImplEx.class, "backL");
+        frontR = hardwareMap.get(ServoImplEx.class, "frontR");
+        frontL = hardwareMap.get(ServoImplEx.class, "frontL");
 //        extend1 = hardwareMap.get(ServoImplEx.class, "extend1");
 //        extend2 = hardwareMap.get(ServoImplEx.class, "extend2");
 
@@ -137,16 +137,7 @@ public class TeleOpMain extends LinearOpMode {
 
                         break;
                     case DRAWER_START:
-                        if (gamepad1.y) {
-                            setDrawerHeight(3000);
-                            drawerState = state.DRAWER_FLIP_OUT;
-                        } else if (gamepad1.b) {
-                            setDrawerHeight(2250);
-                            drawerState = state.DRAWER_FLIP_OUT;
-                        } else if (gamepad1.a) {
-                            setDrawerHeight(1500);
-                            drawerState = state.DRAWER_FLIP_OUT;
-                        }
+
                         break;
                     case DRAWER_FLIP_OUT:
 
@@ -194,17 +185,33 @@ public class TeleOpMain extends LinearOpMode {
                 }
 
                 //OTHER GAMEPAD2 CONTROLS
-                if(gamepad2.dpad_down){
-                    right.setMotorDisable();
-                    drawerState = state.DRAWER_START;
+                if(gamepad1.right_bumper){
+                    backR.setPosition(1);
+                    backL.setPosition(0);
                 }
 
-                if(gamepad2.dpad_up){
-                    right.setMotorEnable();
-                    reset();
+                if(gamepad1.left_bumper){
+                    backR.setPosition(0.75);
+                    backL.setPosition(0.30);
+                }
+
+                if(gamepad1.dpad_down){
+                    setDrawerHeight(-height);
+                }
+
+                if (gamepad1.y) {
+                    setDrawerHeight(3600); // top basket good
+                    drawerState = state.DRAWER_FLIP_OUT;
+                } else if (gamepad1.b) {
+                    setDrawerHeight(1800);
+                    drawerState = state.DRAWER_FLIP_OUT;
+                } else if (gamepad1.a) {
+                    setDrawerHeight(1500);
+                    drawerState = state.DRAWER_FLIP_OUT;
                 }
 
                 //GAMEPAD1 CONTROLS
+
 
                 if(gamepad1.left_trigger > 0){
                     hang.setPower(-gamepad1.left_trigger);
@@ -244,8 +251,8 @@ public class TeleOpMain extends LinearOpMode {
     public void setDrawerHeight(int h){
         height = h;
 
-        movevertically(right, h, 0.1);
-        movevertically(left, h, 0.1);
+        movevertically(right, h, 1);
+        movevertically(left, h, 1);
     }
 
     public void waitforDrawer(DcMotor george) {

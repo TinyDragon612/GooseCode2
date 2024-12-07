@@ -18,7 +18,7 @@ public class SlideTester extends LinearOpMode {
         DcMotorEx right, left;
         waitForStart();
 
-        int TargetPosition = 1000;
+        int TargetPosition = 2000;
 
         boolean usePIDF = false;
 
@@ -62,10 +62,16 @@ public class SlideTester extends LinearOpMode {
                 left.setPower(-gamepad1.right_trigger);
                 usePIDF = false;
             }
-//            else if(usePIDF){
-//                right.setPower(vert.calculate(right.getCurrentPosition(), TargetPosition));
-//                left.setPower(vert.calculate(right.getCurrentPosition(), TargetPosition));
-//            }
+            else if(usePIDF){
+                right.setPower(0);
+                left.setPower(0);
+
+                if(gamepad1.cross){
+                    right.setPower(vert.calculate(right.getCurrentPosition(), TargetPosition));
+                    left.setPower(vert.calculate(right.getCurrentPosition(), TargetPosition));
+                }
+
+            }
 
         }
 

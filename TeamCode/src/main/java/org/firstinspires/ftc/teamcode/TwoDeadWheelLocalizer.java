@@ -27,15 +27,15 @@ import org.firstinspires.ftc.teamcode.messages.TwoDeadWheelInputsMessage;
 public final class TwoDeadWheelLocalizer implements Localizer {
     public static class Params {
         public double parYTicks = 0.0; // y position of the parallel encoder (in tick units)
-        public double perpXTicks = 0.0; // x position of the perpendicular encoder (in tick units)
+        public double leftBackXTicks = 0.0; // x position of the leftBackendicular encoder (in tick units)
     }
 
     public static Params PARAMS = new Params();
 
-    public final Encoder par, perp;
+    public final Encoder par, leftBack;
     public final IMU imu;
 
-    private int lastParPos, lastPerpPos;
+    private int lastParPos, lastleftBackPos;
     private Rotation2d lastHeading;
 
     private final double inPerTick;
@@ -48,7 +48,7 @@ public final class TwoDeadWheelLocalizer implements Localizer {
         //   the encoders should be plugged into the slot matching the named motor
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
         par = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "par")));
-        perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "perp")));
+        leftBack = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "leftBack")));
 
         // TODO: reverse encoder directions if needed
         //   par.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -62,7 +62,7 @@ public final class TwoDeadWheelLocalizer implements Localizer {
 
     public Twist2dDual<Time> update() {
         PositionVelocityPair parPosVel = par.getPositionAndVelocity();
-        PositionVelocityPair perpPosVel = perp.getPositionAndVelocity();
+        PositionVelocityPair leftBackPosVel = leftBack.getPositionAndVelocity();
 
         YawPitchRollAngles angles = imu.getRobotYawPitchRollAngles();
         // Use degrees here to work around https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/1070
@@ -75,7 +75,7 @@ public final class TwoDeadWheelLocalizer implements Localizer {
                 angularVelocityDegrees.acquisitionTime
         );
 
-        FlightRecorder.write("TWO_DEAD_WHEEL_INPUTS", new TwoDeadWheelInputsMessage(parPosVel, perpPosVel, angles, angularVelocity));
+        FlightRecorder.write("TWO_DEAD_WHEEL_INPUTS", new TwoDeadWheelInputsMessage(parPosVel, leftBackPosVel, angles, angularVelocity));
 
         Rotation2d heading = Rotation2d.exp(angles.getYaw(AngleUnit.RADIANS));
 
@@ -91,7 +91,7 @@ public final class TwoDeadWheelLocalizer implements Localizer {
             initialized = true;
 
             lastParPos = parPosVel.position;
-            lastPerpPos = perpPosVel.position;
+            lastleftBackPos = leftBackPosVel.position;
             lastHeading = heading;
 
             return new Twist2dDual<>(
@@ -101,7 +101,7 @@ public final class TwoDeadWheelLocalizer implements Localizer {
         }
 
         int parPosDelta = parPosVel.position - lastParPos;
-        int perpPosDelta = perpPosVel.position - lastPerpPos;
+        int leftBackPosDelta = leftBackPosVel.position - lastleftBackPos;
         double headingDelta = heading.minus(lastHeading);
 
         Twist2dDual<Time> twist = new Twist2dDual<>(
@@ -111,8 +111,8 @@ public final class TwoDeadWheelLocalizer implements Localizer {
                                 parPosVel.velocity - PARAMS.parYTicks * headingVel,
                         }).times(inPerTick),
                         new DualNum<Time>(new double[] {
-                                perpPosDelta - PARAMS.perpXTicks * headingDelta,
-                                perpPosVel.velocity - PARAMS.perpXTicks * headingVel,
+                                leftBackPosDelta - PARAMS.leftBackXTicks * headingDelta,
+                                leftBackPosVel.velocity - PARAMS.leftBackXTicks * headingVel,
                         }).times(inPerTick)
                 ),
                 new DualNum<>(new double[] {
@@ -122,7 +122,7 @@ public final class TwoDeadWheelLocalizer implements Localizer {
         );
 
         lastParPos = parPosVel.position;
-        lastPerpPos = perpPosVel.position;
+        lastleftBackPos = leftBackPosVel.position;
         lastHeading = heading;
 
         return twist;

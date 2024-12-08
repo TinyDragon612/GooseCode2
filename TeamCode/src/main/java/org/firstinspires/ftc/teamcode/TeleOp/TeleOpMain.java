@@ -23,7 +23,7 @@ public class TeleOpMain extends LinearOpMode {
 
     private DcMotorEx leftFront, leftBack, rightBack, rightFront; //wheels
 
-    private DcMotorEx right, left, x_slide1, x_slide2, hang; //slides
+    private DcMotorEx right, left, hang; //slides
 
     private ServoImplEx backR, backL, frontR, frontL, extend1, extend2;
 

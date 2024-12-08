@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
 import com.acmerobotics.roadrunner.ftc.RawEncoder;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -25,22 +26,17 @@ public class TeleOpMain extends LinearOpMode {
 
     private DcMotorEx right, left, hang; //slides
 
-    private ServoImplEx backR, backL, frontR, frontL, extend1, extend2;
+    private ServoImplEx backR, backL, frontR, frontL, extendR, extendL;
 
     private int errorBound = 60;
     int height;
 
     public enum state {
-        DRAWER_START,
-        DRAWER_FLIP_IN,
-        DRAWER_FLIP_OUT,
-        DRAWER_RETRACT,
-        DRAWER_SETTLE,
+        PRESET,
         CUSTOM
-
     };
 
-    state drawerState = state.DRAWER_START;
+    state drawerState = state.PRESET;
 
     ElapsedTime drawerTimer = new ElapsedTime();
     ElapsedTime servoTimer = new ElapsedTime();
@@ -65,8 +61,8 @@ public class TeleOpMain extends LinearOpMode {
         backL = hardwareMap.get(ServoImplEx.class, "backL");
         frontR = hardwareMap.get(ServoImplEx.class, "frontR");
         frontL = hardwareMap.get(ServoImplEx.class, "frontL");
-//        extend1 = hardwareMap.get(ServoImplEx.class, "extend1");
-//        extend2 = hardwareMap.get(ServoImplEx.class, "extend2");
+        extendL = hardwareMap.get(ServoImplEx.class, "extend1");
+        extendR = hardwareMap.get(ServoImplEx.class, "extend2");
 
         telemetry.update();
 
@@ -78,24 +74,20 @@ public class TeleOpMain extends LinearOpMode {
         right.setDirection(DcMotorEx.Direction.REVERSE);
         left.setDirection(DcMotorEx.Direction.FORWARD);
 
-        right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        right.setTargetPosition(0);
-        left.setTargetPosition(0);
-
-        right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        reset();
 
         right.setCurrentAlert(1, CurrentUnit.AMPS);
 
         hang.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hang.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        hang.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        hang.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
         servoTimer.reset();
         telemetry.update();
-        drawerState = state.DRAWER_START;
+        drawerState = state.PRESET;
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -132,102 +124,102 @@ public class TeleOpMain extends LinearOpMode {
 //                        if(gamepad2.left_bumper) {
 //                            right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //                            left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                            drawerState = state.DRAWER_FLIP_IN;
+//
 //                        }
 
                         break;
-                    case DRAWER_START:
-
-                        break;
-                    case DRAWER_FLIP_OUT:
-
-//                        if (drawersDone(slide1, slide1)) {
-//
-//                            swoosh1.setPosition(0);
-//                            swoosh2.setPosition(.2);
-//                            flop1.setPosition(0.87);
-//                            flop2.setPosition(0.13);
-//
-//                            drawerState = state.DRAWER_FLIP_IN;
-//                        }
-                        break;
-
-                    case DRAWER_FLIP_IN:
-
-                        if(gamepad2.right_bumper){
-                            right.setZeroPowerBehavior(brake);
-                            left.setZeroPowerBehavior(brake);
-                            drawerState = state.CUSTOM;
-                            drawerTimer.reset();
-                            drawerState = state.DRAWER_RETRACT;
+                    case PRESET:
+                        if (gamepad1.triangle) {
+                            setDrawerHeight(3600); // top basket good
+                            waitforDrawers(right, left);
+                            extendR.setPosition(0.70);
+                            extendL.setPosition(0.30);
+                        } else if (gamepad1.circle) {
+                            setDrawerHeight(1800);
+                        } else if (gamepad1.cross) {
+                            setDrawerHeight(1500);
                         }
 
-                        break;
-                    case DRAWER_RETRACT:
-//                        if (drawerTimer.seconds() >= 3) {
-//                            bringDrawersDown();
-//                            drawerTimer.reset();
-//                            drawerState = state.DRAWER_SETTLE;
-//                        }
-                        break;
-                    case DRAWER_SETTLE:
-//                        if (magnetic.isPressed() || magnetic2.isPressed()) {
-//                            pinch1.setPosition(0.35);
-//                            pinch2.setPosition(0.9);
-//                            untoPosition(slide1);
-//                            //untoPosition(slide2);
-//                            reset();
-//                            drawerState = state.DRAWER_START;
-//                        }
-                        break;
+                        if(gamepad1.square){
+                            setDrawerHeight(-height);
+                            if(drawersDone(right, left)){
+                                settle_slides();
+                            }
+                        }
+
                     default:
-                        drawerState = state.DRAWER_START;
+                        drawerState = state.PRESET;
                 }
 
                 //OTHER GAMEPAD2 CONTROLS
-                if(gamepad1.right_bumper){
-                    backR.setPosition(1);
-                    backL.setPosition(0);
+
+                //servos
+                if(gamepad2.dpad_up){
+                    extendR.setPosition(0.70);
+                    extendL.setPosition(0.30);
                 }
 
-                if(gamepad1.left_bumper){
-                    backR.setPosition(0.75);
-                    backL.setPosition(0.30);
+                if(gamepad2.dpad_right){
+                    extendR.setPosition(0.85);
+                    extendL.setPosition(0.15);
                 }
 
-                if(gamepad1.dpad_down){
-                    setDrawerHeight(-height);
+                if(gamepad2.dpad_down){
+                    extendR.setPosition(1);
+                    extendL.setPosition(0);
                 }
 
-                if (gamepad1.y) {
-                    setDrawerHeight(3600); // top basket good
-                    drawerState = state.DRAWER_FLIP_OUT;
-                } else if (gamepad1.b) {
-                    setDrawerHeight(1800);
-                    drawerState = state.DRAWER_FLIP_OUT;
-                } else if (gamepad1.a) {
-                    setDrawerHeight(1500);
-                    drawerState = state.DRAWER_FLIP_OUT;
+                //hanger
+                if(gamepad2.right_stick_y > 0){
+                    hang.setTargetPosition(4500);
+                    hang.setPower(gamepad2.right_stick_y);
+                }
+                else if(gamepad2.right_stick_y < 0){
+                    hang.setTargetPosition(0);
+                    hang.setPower(gamepad2.right_stick_y);
+                }
+                else{
+                    hang.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    hang.setPower(0);
                 }
 
                 //GAMEPAD1 CONTROLS
 
-
-                if(gamepad1.left_trigger > 0){
-                    hang.setPower(-gamepad1.left_trigger);
-                }
-                else if(gamepad1.right_trigger > 0){
-                    hang.setPower(gamepad1.right_trigger);
-                }
-                else{
-                    hang.setPower(0);
-                }
-
-
+                //drivetrain
                 rightFront.setPower(((gamepad1.left_stick_y + gamepad1.left_stick_x)) + (gamepad1.right_stick_x));
                 leftFront.setPower(((-gamepad1.left_stick_y + gamepad1.left_stick_x)) + ((gamepad1.right_stick_x)));
                 rightBack.setPower(((gamepad1.left_stick_y + -gamepad1.left_stick_x)) + (gamepad1.right_stick_x));
                 leftBack.setPower(((-gamepad1.left_stick_y + -gamepad1.left_stick_x)) + (gamepad1.right_stick_x));
+
+                //servos
+                if(gamepad1.left_bumper){
+                    frontR.setPosition(1);
+                    frontL.setPosition(0);
+                }
+
+                if(gamepad1.right_bumper){
+                    frontR.setPosition(0.5);
+                    frontL.setPosition(0.35);
+                }
+
+                if(gamepad1.left_trigger > 0){
+                    backR.setPosition(1);
+                    backL.setPosition(0);
+                }
+
+                if(gamepad1.right_trigger > 0){
+                    backR.setPosition(0.75);
+                    backL.setPosition(0.30);
+                }
+
+                //drawer heights
+                if(gamepad1.cross){
+                    setDrawerHeight(500);
+                }
+
+                if(gamepad1.circle){
+                    setDrawerHeight(right.getCurrentPosition() + 30);
+                }
 
             }
 
@@ -272,7 +264,7 @@ public class TeleOpMain extends LinearOpMode {
     public void movevertically(DcMotorEx lipsey, int position, double power) {
         untoPosition(lipsey);
         runtoPosition(lipsey);
-        lipsey.setTargetPosition(lipsey.getCurrentPosition() + position);
+        lipsey.setTargetPosition(position);
         lipsey.setPower(power);
     }
 
@@ -294,6 +286,22 @@ public class TeleOpMain extends LinearOpMode {
     public void untoPosition(DcMotorEx Neil) {
         Neil.setPower(0);
         Neil.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    public void settle_slides(){
+        if(left.getCurrentPosition() < 10 && left.getCurrentAlert(CurrentUnit.AMPS) > 0.5 && left.getTargetPosition() == 0){
+            left.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            left.setTargetPosition(0);
+            left.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+            left.setPower(0);
+
+        }
+        if(right.getCurrentPosition() < 10 && right.getCurrentAlert(CurrentUnit.AMPS) > 0.5 && left.getTargetPosition() == 0){
+            right.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            left.setTargetPosition(0);
+            right.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+            right.setPower(0);
+        }
     }
 
 }

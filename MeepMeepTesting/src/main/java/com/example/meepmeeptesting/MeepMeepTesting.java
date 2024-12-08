@@ -12,23 +12,31 @@ public class MeepMeepTesting {
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .setConstraints(70, 70, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(0, -70, Math.toRadians(90)))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(0, -70, Math.toRadians(-90)))
                 .lineToY(-33)
-                .waitSeconds(3)
+                .waitSeconds(2)
                 .strafeTo(new Vector2d(35, -40))
                 .endTrajectory()
                 .lineToY(-10)
-                .strafeToLinearHeading(new Vector2d(45, -10), Math.toRadians(180))
+                .strafeTo(new Vector2d(45, -10))
                 .strafeTo(new Vector2d(45, -60))
-                .strafeTo(new Vector2d(48, -10))
+                .strafeTo(new Vector2d(45, -10))
+                .strafeToLinearHeading(new Vector2d(55, -10), Math.toRadians(-180))
                 .strafeTo(new Vector2d(55, -60))
-
+                .waitSeconds(2)
+                .strafeToLinearHeading(new Vector2d(0, -33), Math.toRadians(-90))
+                .waitSeconds(2)
+                .strafeToLinearHeading(new Vector2d(55, -60), Math.toRadians(-180))
+                .waitSeconds(2)
+                .strafeToLinearHeading(new Vector2d(0, -33), Math.toRadians(-90))
+                .waitSeconds(2)
+                .strafeToLinearHeading(new Vector2d(55, -60), Math.toRadians(-180))
                 .build());
 
-        meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_OFFICIAL)
+        meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 .addEntity(myBot)

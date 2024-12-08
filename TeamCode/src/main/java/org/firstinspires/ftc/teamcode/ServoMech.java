@@ -36,7 +36,7 @@ public class ServoMech {
         return new CloseFront();
     }
 
-    public class OpenClaw implements Action {
+    public class OpenFront implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             frontR.setPosition(0.55);
@@ -45,7 +45,7 @@ public class ServoMech {
         }
     }
     public Action openFront() {
-        return new OpenClaw();
+        return new OpenFront();
     }
 
 }

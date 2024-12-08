@@ -12,7 +12,6 @@ public class SlideTester extends LinearOpMode {
 
     PIDFController vert = new PIDFController(0.05, 0.001, 0.01, 0.005);
 
-
     @Override
     public void runOpMode(){
         DcMotorEx right, left;

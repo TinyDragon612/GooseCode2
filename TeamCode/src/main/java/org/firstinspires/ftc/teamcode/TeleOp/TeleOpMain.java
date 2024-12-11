@@ -61,8 +61,8 @@ public class TeleOpMain extends LinearOpMode {
         backL = hardwareMap.get(ServoImplEx.class, "backL");
         frontR = hardwareMap.get(ServoImplEx.class, "frontR");
         frontL = hardwareMap.get(ServoImplEx.class, "frontL");
-        extendL = hardwareMap.get(ServoImplEx.class, "extend1");
-        extendR = hardwareMap.get(ServoImplEx.class, "extend2");
+        extendL = hardwareMap.get(ServoImplEx.class, "extendR");
+        extendR = hardwareMap.get(ServoImplEx.class, "extendL");
 
         telemetry.update();
 
@@ -83,6 +83,7 @@ public class TeleOpMain extends LinearOpMode {
 
         hang.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hang.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hang.setTargetPosition(0);
         hang.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
         servoTimer.reset();
@@ -129,20 +130,21 @@ public class TeleOpMain extends LinearOpMode {
 
                         break;
                     case PRESET:
-                        if (gamepad1.triangle) {
+                        if (gamepad2.triangle) {
                             setDrawerHeight(3600); // top basket good
-                            waitforDrawers(right, left);
-                            extendR.setPosition(0.70);
-                            extendL.setPosition(0.30);
-                        } else if (gamepad1.circle) {
+                            //waitforDrawers(right, left);
+                            //extendR.setPosition(0.70);
+                            //extendL.setPosition(0.30);
+                        } else if (gamepad2.circle) {
                             setDrawerHeight(1800);
-                        } else if (gamepad1.cross) {
+                        } else if (gamepad2.cross) {
                             setDrawerHeight(1500);
                         }
 
-                        if(gamepad1.square){
-                            setDrawerHeight(-height);
-                            if(drawersDone(right, left)){
+                        if(gamepad2.square){
+                            drawerTimer.reset();
+                            setDrawerHeight(0);
+                            if(drawersDone(right, left) && drawerTimer.seconds() > 3){
                                 settle_slides();
                             }
                         }
@@ -171,11 +173,11 @@ public class TeleOpMain extends LinearOpMode {
 
                 //hanger
                 if(gamepad2.right_stick_y > 0){
-                    hang.setTargetPosition(4500);
+                    //hang.setTargetPosition(4500);
                     hang.setPower(gamepad2.right_stick_y);
                 }
                 else if(gamepad2.right_stick_y < 0){
-                    hang.setTargetPosition(0);
+                    //hang.setTargetPosition(0);
                     hang.setPower(gamepad2.right_stick_y);
                 }
                 else{
@@ -198,7 +200,7 @@ public class TeleOpMain extends LinearOpMode {
                 }
 
                 if(gamepad1.right_bumper){
-                    frontR.setPosition(0.5);
+                    frontR.setPosition(0.65);
                     frontL.setPosition(0.35);
                 }
 
@@ -214,11 +216,11 @@ public class TeleOpMain extends LinearOpMode {
 
                 //drawer heights
                 if(gamepad1.cross){
-                    setDrawerHeight(500);
+                    setDrawerHeight(550);
                 }
 
                 if(gamepad1.circle){
-                    setDrawerHeight(right.getCurrentPosition() + 30);
+                    setDrawerHeight(right.getCurrentPosition() + 100);
                 }
 
             }
@@ -242,7 +244,6 @@ public class TeleOpMain extends LinearOpMode {
 
     public void setDrawerHeight(int h){
         height = h;
-
         movevertically(right, h, 1);
         movevertically(left, h, 1);
     }

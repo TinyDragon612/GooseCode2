@@ -65,11 +65,34 @@ public class SlideTester extends LinearOpMode {
                 right.setPower(0);
                 left.setPower(0);
 
+                /*
+                int n = 0;
+
                 if(gamepad1.cross){
-                    right.setPower(vert.calculate(right.getCurrentPosition(), TargetPosition));
-                    left.setPower(vert.calculate(right.getCurrentPosition(), TargetPosition));
+                    n = 1;
+                }
+                else if(gamepad1.circle){
+                    n = 2;
                 }
 
+                switch(n){
+                    case 1:
+                        right.setPower(vert.calculate(right.getCurrentPosition(), 1000));
+                        left.setPower(vert.calculate(right.getCurrentPosition(), 1000));
+                        right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        break;
+                    case 2:
+                        right.setPower(vert.calculate(right.getCurrentPosition(), 500));
+                        left.setPower(vert.calculate(right.getCurrentPosition(), 500));
+                        right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        break;
+                    default:
+
+
+                }
+            */
             }
 
         }

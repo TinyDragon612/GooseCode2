@@ -34,154 +34,20 @@ public class RRActions {
         extendL = hardwareMap.get(ServoImplEx.class, "extendL");
     }
 
-    public class openClaw implements Action {
 
+    public class wallBump implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            //clawServo.setPosition(values.clawOpen);
+            slides.setTargetPosition(570);
             return false;
         }
-
-
     }
-
-    public Action openClaw() {
-        return new RRActions.openClaw();
-    }
-
-
-
-    public class closeClaw implements Action {
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            //clawServo.setPosition(values.clawClsoed);
-            return false;
-        }
-
-
-    }
-
-    public Action closeClaw() {
-        return new RRActions.closeClaw();
-    }
-
-
-
-    public class extendClaw implements Action {
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-
-            //extenderRight.setPosition(1-values.clawExtend);
-            //extenderLeft.setPosition(values.clawExtend);
-            return false;
-        }
-
-
-    }
-
-    public Action extendClaw() {
-        return new RRActions.extendClaw();
-    }
-
-
-    public class moveClaw implements Action {
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-
-            //extenderRight.setPosition(1-extendAmount);
-            //extenderLeft.setPosition(extendAmount);
-            return false;
-        }
-
-
-    }
-
-    public Action moveClaw(double length) {
-        extendAmount = length;
-        return new RRActions.moveClaw();
-    }
-
-
-
-    public class retractClaw implements Action {
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-
-            //extenderRight.setPosition(1-values.clawRetract);
-            //extenderLeft.setPosition(values.clawRetract);
-            return false;
-        }
-
-
-    }
-
-    public Action retractClaw() {
-        return new RRActions.retractClaw();
-    }
-
-    public class clawUp implements Action {
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-
-            //clawTurnLeft.setPosition(0.20);
-            //clawTurnRight.setPosition(0.8);
-            return false;
-        }
-
-
-    }
-
-    public Action clawUp() {
-        return new RRActions.clawUp();
-    }
-
-    public class clawDown implements Action {
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-
-            //clawTurnLeft.setPosition(0.42);
-            //clawTurnRight.setPosition(0.58);
-            return false;
-        }
-
-
-    }
-
-    public Action clawDown() {
-        return new RRActions.clawDown();
-    }
-
-
-
-    public class clawVertical implements Action {
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-
-            //clawTurnLeft.setPosition(0.1);
-            //clawTurnRight.setPosition(0.9);
-            return false;
-        }
-
-
-    }
-
-    public Action clawVertical() {
-        return new RRActions.clawVertical();
-    }
-
-
-
+    public Action wallBump() {return new RRActions.wallBump();}
 
     public class highBasket implements Action {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-
             slides.setTargetPosition(3600);
             return false;
         }
@@ -207,9 +73,34 @@ public class RRActions {
 
     }
 
-    public Action highChamber() {
-        return new RRActions.highChamber();
+    public Action highChamber() {return new RRActions.highChamber();}
+
+    public class scoreChamber implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+
+            slides.setTargetPosition(1500);
+            return false;
+        }
+
+
     }
+
+    public Action scoreChamber() {
+        return new RRActions.scoreChamber();
+    }
+
+    public class wall implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            slides.setTargetPosition(520);
+            return false;
+        }
+    }
+
+    public Action wall() {return new RRActions.wall();}
 
 
 
@@ -217,38 +108,43 @@ public class RRActions {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-
             slides.setTargetPosition(0);
             return false;
         }
-
-
     }
 
     public Action slidesDown() {
         return new RRActions.slidesDown();
     }
 
-
-
-    public class specimenOpen implements Action {
+    public class openBack implements Action {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            backR.setPosition(1);
+            backL.setPosition(0);
+            return false;
+        }
+    }
 
-            //specimenLeft.setPosition(0.65);
-            //specimenRight.setPosition(0.7);
+    public Action openBack() {
+        return new RRActions.openBack();
+    }
+
+    public class closeBack implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            backR.setPosition(0.75);
+            backL.setPosition(0.30);
             return false;
         }
 
-
     }
 
-    public Action specimenOpen() {
-        return new RRActions.specimenOpen();
+    public Action closeBack() {
+        return new RRActions.closeBack();
     }
-
-
 
     public class specimenClose implements Action {
 
@@ -266,10 +162,6 @@ public class RRActions {
     public Action specimenClose() {
         return new RRActions.specimenClose();
     }
-
-
-
-
 
 
 }

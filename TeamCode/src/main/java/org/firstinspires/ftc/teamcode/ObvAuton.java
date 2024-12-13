@@ -22,41 +22,64 @@ public class ObvAuton extends LinearOpMode{
         RRActions robot = new RRActions(hardwareMap);
 
         TrajectoryActionBuilder traj1 = drive.actionBuilder(initialPose)
-                .strafeToConstantHeading(new Vector2d(-10, -33))
+                .strafeToConstantHeading(new Vector2d(-10, -40))
                 //.afterTime(3, robot.highChamber())
                 .waitSeconds(1)
-                .lineToY(-37)
                 .splineToLinearHeading(new Pose2d(35, -50, 0), Math.toRadians(90))
                 .splineToConstantHeading(new Vector2d(45, -10), 0)
-                .turnTo(Math.toRadians(-100))
-                .strafeTo(new Vector2d(45, -60))
+                .turn(Math.toRadians(105))
+                .strafeTo(new Vector2d(45, -70))
                 .strafeTo(new Vector2d(45, -10))
-                .strafeTo(new Vector2d(58, -10))
-                .strafeTo(new Vector2d(58, -70))
-                .endTrajectory()
-                .splineToConstantHeading(new Vector2d(42, -67), Math.toRadians(90))
-                .lineToY(-63)
+                .strafeTo(new Vector2d(53, -10))
+                .strafeTo(new Vector2d(53, -70))
+                .strafeTo(new Vector2d(47, -70))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(0, -33), Math.toRadians(270))
-                .lineToY(-37)
+                .strafeToLinearHeading(new Vector2d(0, -60), Math.toRadians(285))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(55, -67), Math.toRadians(90))
-                .lineToY(-63)
+                .strafeToLinearHeading(new Vector2d(55, -70), Math.toRadians(105))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(5, -33), Math.toRadians(270))
-                .lineToY(-37)
+                .strafeToLinearHeading(new Vector2d(0, -60), Math.toRadians(285))
                 .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(55, -67), Math.toRadians(90));
+                .strafeTo(new Vector2d(55, -70));
+
+        TrajectoryActionBuilder traj612 = drive.actionBuilder(initialPose)
+                .strafeToConstantHeading(new Vector2d(-10, -40))
+                .waitSeconds(1)
+                .strafeTo(new Vector2d(35, -60))
+                .splineToConstantHeading(new Vector2d(45, -10), 0)
+                .turn(Math.toRadians(105))
+                .waitSeconds(0.5)
+                .turn(Math.toRadians(105))
+                .strafeTo(new Vector2d(45, -70))
+                .strafeTo(new Vector2d(45, -10))
+                .strafeTo(new Vector2d(53, -10))
+                .strafeTo(new Vector2d(53, -70))
+                //.endTrajectory()
+                //.splineToConstantHeading(new Vector2d(50, -70), Math.toRadians(90))
+                .waitSeconds(1)
+                .strafeTo(new Vector2d(-5, -60))
+                .turn(Math.toRadians(230))
+                .lineToY(-62)
+                .waitSeconds(1)
+                .strafeTo(new Vector2d(0, -50))
+                .turn(Math.toRadians(230))
+                .strafeTo(new Vector2d(55, -70))
+                .waitSeconds(1)
+                .strafeTo(new Vector2d(0, -50))
+                .turn(Math.toRadians(230))
+                .strafeTo(new Vector2d(0, -40))
+                .waitSeconds(1)
+                .strafeTo(new Vector2d(55, -70));
 
         TrajectoryActionBuilder traj2 = drive.actionBuilder(initialPose)
                 .turn(Math.toRadians(180))
-                .waitSeconds(0.5)
+                .waitSeconds(1)
                 .turn(Math.toRadians(180))
-                .waitSeconds(0.5)
+                .waitSeconds(1)
                 .turn(Math.toRadians(180))
-                .waitSeconds(0.5)
+                .waitSeconds(1)
                 .turn(Math.toRadians(180))
-                .waitSeconds(0.5)
+                .waitSeconds(1)
                 .turn(Math.toRadians(180));
 
         TrajectoryActionBuilder traj3 = drive.actionBuilder(initialPose)
@@ -79,8 +102,9 @@ public class ObvAuton extends LinearOpMode{
             Actions.runBlocking(
                     new SequentialAction(
                             traj1.build(),
-                            trajectoryActionCloseOut
-                            //robot.highChamber()
+
+                            trajectoryActionCloseOut,
+                            robot.highChamber()
                     )
             );
         }

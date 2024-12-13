@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
-import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
-import com.acmerobotics.roadrunner.ftc.RawEncoder;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -12,7 +9,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @TeleOp(name= "TeleOpMain", group="Linear Opmode")
 //@Disabled
@@ -30,6 +26,7 @@ public class TeleOpMain extends LinearOpMode {
 
     private int errorBound = 60;
     int height;
+    boolean holding = false;
 
     public enum state {
         PRESET,
@@ -84,7 +81,7 @@ public class TeleOpMain extends LinearOpMode {
         hang.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hang.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         hang.setTargetPosition(0);
-        hang.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        hang.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         servoTimer.reset();
         telemetry.update();
@@ -100,57 +97,43 @@ public class TeleOpMain extends LinearOpMode {
                 telemetry.addData("right: ", right.getCurrentPosition());
                 telemetry.addData("left: ", left.getCurrentPosition());
                 telemetry.addData("hang: ", hang.getCurrentPosition());
+                telemetry.addData("state: ", drawerState);
+                telemetry.addData("mode: ", right.getMode());
                 telemetry.update();
-
-                switch (drawerState) {
-                    case CUSTOM:
-//                        right.setZeroPowerBehavior(brake);
-//                        left.setZeroPowerBehavior(brake);
-//
-//                        //left.setPower(-gamepad2.right_stick_y);
-//                        //right.setPower(-gamepad2.right_stick_y);
-//
-//                        x = -gamepad2.right_stick_y;
-//
-//                        if(x <= 1 && x > 0){
-//                            movevertically(slide1, 9000, x * 10);
-//                        }
-//                        else if(x >= -1 && x < 0){
-//                            movevertically(slide1, 0, x * 10);
-//                        }
-//                        else{
-//                            right.setTargetPositionTolerance(slide1.getCurrentPosition());
-//                        }
-//
-//                        if(gamepad2.left_bumper) {
-//                            right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                            left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//                        }
-
-                        break;
-                    case PRESET:
-                        if (gamepad2.triangle) {
-                            setDrawerHeight(3600); // top basket good
-                            //waitforDrawers(right, left);
-                            //extendR.setPosition(0.70);
-                            //extendL.setPosition(0.30);
-                        } else if (gamepad2.circle) {
-                            setDrawerHeight(1800);
-                        } else if (gamepad2.cross) {
-                            setDrawerHeight(1500);
-                        }
-
-                        if(gamepad2.square){
-                            drawerTimer.reset();
-                            setDrawerHeight(0);
-                            if(drawersDone(right, left) && drawerTimer.seconds() > 3){
-                                settle_slides();
-                            }
-                        }
-
-                    default:
-                        drawerState = state.PRESET;
+                
+                if (gamepad2.triangle) {
+                    move(3600, false); // top basket good
+//waitforDrawers(right, left);
+//extendR.setPosition(0.70);
+//extendL.setPosition(0.30);
+                } else if (gamepad2.circle) {
+                    move(1800, false);
+                } else if (gamepad2.cross) {
+                    move(1500, false);
+                } else if(gamepad2.square){
+                    drawerTimer.reset();
+                    move(0, false);
+                            if(drawersDone(right, left) && drawerTimer.seconds() > 2){
+                        settle_slides();
+                    }
+                }
+                else if (gamepad1.cross){
+                    move(550, false);
+                }
+                else if(gamepad1.circle){
+                    move(right.getCurrentPosition() + 100, false);
+                }
+                else if(gamepad1.dpad_up){
+                    move(2800, false);
+                }
+                else if(gamepad1.dpad_down){
+                    move(2230, false);
+                }
+                else if(gamepad2.left_trigger > 0 || gamepad2.right_trigger > 0) {
+                    move(gamepad2.left_trigger - gamepad2.right_trigger, true);
+                }
+                else if(!holding){
+                    move(0, true);
                 }
 
                 //OTHER GAMEPAD2 CONTROLS
@@ -173,11 +156,9 @@ public class TeleOpMain extends LinearOpMode {
 
                 //hanger
                 if(gamepad2.right_stick_y > 0){
-                    //hang.setTargetPosition(4500);
                     hang.setPower(gamepad2.right_stick_y);
                 }
                 else if(gamepad2.right_stick_y < 0){
-                    //hang.setTargetPosition(0);
                     hang.setPower(gamepad2.right_stick_y);
                 }
                 else{
@@ -214,15 +195,6 @@ public class TeleOpMain extends LinearOpMode {
                     backL.setPosition(0.30);
                 }
 
-                //drawer heights
-                if(gamepad1.cross){
-                    setDrawerHeight(550);
-                }
-
-                if(gamepad1.circle){
-                    setDrawerHeight(right.getCurrentPosition() + 100);
-                }
-
             }
 
         }
@@ -242,12 +214,6 @@ public class TeleOpMain extends LinearOpMode {
         left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-    public void setDrawerHeight(int h){
-        height = h;
-        movevertically(right, h, 1);
-        movevertically(left, h, 1);
-    }
-
     public void waitforDrawer(DcMotor george) {
         while(!(george.getCurrentPosition() > george.getTargetPosition() - errorBound && george.getCurrentPosition() < george.getTargetPosition() + errorBound));
     }
@@ -262,13 +228,6 @@ public class TeleOpMain extends LinearOpMode {
                 (BobbyLocks.getCurrentPosition() > BobbyLocks.getTargetPosition() - errorBound && BobbyLocks.getCurrentPosition() < BobbyLocks.getTargetPosition() + errorBound));
     }
 
-    public void movevertically(DcMotorEx lipsey, int position, double power) {
-        untoPosition(lipsey);
-        runtoPosition(lipsey);
-        lipsey.setTargetPosition(position);
-        lipsey.setPower(power);
-    }
-
     public void nostall(DcMotorEx Harry) {
         Harry.setZeroPowerBehavior(floatt);
         Harry.setPower(0);
@@ -277,6 +236,13 @@ public class TeleOpMain extends LinearOpMode {
     public void stall(DcMotorEx DcMotar) {
         DcMotar.setZeroPowerBehavior(brake);
         DcMotar.setPower(0);
+    }
+
+    public void movevertically(DcMotorEx lipsey, int position, double power) {
+        untoPosition(lipsey);
+        runtoPosition(lipsey);
+        lipsey.setTargetPosition(position);
+        lipsey.setPower(power);
     }
 
     public void runtoPosition(DcMotorEx John) {
@@ -290,19 +256,54 @@ public class TeleOpMain extends LinearOpMode {
     }
 
     public void settle_slides(){
-        if(left.getCurrentPosition() < 10 && left.getCurrentAlert(CurrentUnit.AMPS) > 0.5 && left.getTargetPosition() == 0){
+        if(left.getCurrentPosition() < 25 && left.getCurrentAlert(CurrentUnit.AMPS) > 0.5 && left.getTargetPosition() == 0){
             left.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             left.setTargetPosition(0);
             left.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
             left.setPower(0);
 
         }
-        if(right.getCurrentPosition() < 10 && right.getCurrentAlert(CurrentUnit.AMPS) > 0.5 && left.getTargetPosition() == 0){
+        if(right.getCurrentPosition() < 25 && right.getCurrentAlert(CurrentUnit.AMPS) > 0.5 && left.getTargetPosition() == 0){
             right.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             left.setTargetPosition(0);
             right.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
             right.setPower(0);
         }
+    }
+
+    public void move(double movement, boolean byPower){
+        holding = false;
+        right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        if(movement > 0 && byPower){
+            setTargetPosition(3500, movement);
+        }else if(movement < 0 && byPower){
+            setTargetPosition(0, -movement);
+        }else if(byPower){
+            holding = true;
+            setTargetPosition(right.getCurrentPosition(), 0.5);
+        }else if(movement > 3500){
+            setTargetPosition(3500);
+        }else if(movement < 0){
+            setTargetPosition(0);
+        }else{
+            setTargetPosition((int)movement);
+        }
+    }
+    public void setPower(double power){
+        left.setPower(power);
+        right.setPower(power);
+    }
+    public void setTargetPosition(int target){
+        setPower(0.8);
+        left.setTargetPosition(target);
+        right.setTargetPosition(target);
+    }
+
+    public void setTargetPosition(int target, double power){
+        setPower(power);
+        left.setTargetPosition(target);
+        right.setTargetPosition(target);
     }
 
 }

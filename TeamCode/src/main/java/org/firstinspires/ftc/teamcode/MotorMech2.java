@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import androidx.annotation.NonNull;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -10,7 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class MotorMech2 {
-    public DcMotorEx left, right;
+    public DcMotorEx left, right, hang;
     public int targetPosition;
 
     public double power = 0;
@@ -25,6 +26,13 @@ public class MotorMech2 {
         right.setDirection(DcMotorEx.Direction.REVERSE);
         left.setDirection(DcMotorEx.Direction.FORWARD);
         resetEncoders();
+
+        hang = hardwareMap.get(DcMotorEx.class, "hang");
+        hang.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hang.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hang.setTargetPosition(0);
+        hang.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        hang.setDirection(DcMotorEx.Direction.REVERSE);
 
 
         targetPosition = 0;
@@ -110,4 +118,26 @@ public class MotorMech2 {
 
     public double getAmpsLeft(){return left.getCurrent(CurrentUnit.AMPS);}
     public double getAmpsRight(){return right.getCurrent(CurrentUnit.AMPS);}
+
+    public void setHang(){
+        movevertically(hang, 1800, 1);
+    }
+
+
+    public void movevertically(DcMotorEx lipsey, int position, double power) {
+        untoPosition(lipsey);
+        runtoPosition(lipsey);
+        lipsey.setTargetPosition(position);
+        lipsey.setPower(power);
+    }
+
+    public void runtoPosition(DcMotorEx John) {
+        John.setTargetPosition(0);
+        John.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        John.setPower(0);
+    }
+    public void untoPosition(DcMotorEx Neil) {
+        Neil.setPower(0);
+        Neil.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+    }
 }

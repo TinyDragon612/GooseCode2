@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
@@ -17,6 +18,7 @@ public class RRActions {
     private ServoImplEx extendR;
     private ServoImplEx extendL;
     public MotorMech2 slides;
+    public DcMotorEx hang;
 
 
     private double cranePower = 0.1;
@@ -38,7 +40,7 @@ public class RRActions {
     public class wallBump implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            slides.setTargetPosition(570);
+            slides.setTargetPosition(600);
             return false;
         }
     }
@@ -83,13 +85,34 @@ public class RRActions {
             slides.setTargetPosition(1500);
             return false;
         }
-
-
     }
 
-    public Action scoreChamber() {
-        return new RRActions.scoreChamber();
+    public Action scoreChamber() {return new RRActions.scoreChamber();}
+
+
+    public class slideHang implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+
+            slides.setTargetPosition(1350);
+            return false;
+        }
     }
+
+    public Action slideHang() {return new RRActions.slideHang();}
+
+
+    public class setHang implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            slides.setHang();
+            return false;
+        }
+    }
+
+    public Action setHang() {return new RRActions.setHang();}
 
     public class wall implements Action {
 

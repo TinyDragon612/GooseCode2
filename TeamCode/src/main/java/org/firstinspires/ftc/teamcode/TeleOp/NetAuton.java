@@ -11,6 +11,9 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.RRLegacy.MecanumDrive;
+import org.firstinspires.ftc.teamcode.RRLegacy.RRActions;
+
 @Config
 @Autonomous(name = "NetAuton", group = "drive")
 public class NetAuton extends LinearOpMode{

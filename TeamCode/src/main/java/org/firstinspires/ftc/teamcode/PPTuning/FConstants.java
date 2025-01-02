@@ -7,5 +7,7 @@ public class FConstants {
     static {
         // Select our localizer
         FollowerConstants.localizers = Localizers.TWO_WHEEL;
+        // We can change the value of any variable/constant of FollowerConstants.
+        FollowerConstants.mass = 17.1; // In kg
     }
 }

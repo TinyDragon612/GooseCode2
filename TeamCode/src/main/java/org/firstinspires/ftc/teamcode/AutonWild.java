@@ -12,8 +12,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Config
-@Autonomous(name = "AutonMin", group = "drive")
-public class AutonMin extends LinearOpMode{
+@Autonomous(name = "AutonWild", group = "drive")
+public class AutonWild extends LinearOpMode{
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -43,38 +43,31 @@ public class AutonMin extends LinearOpMode{
                 .strafeToConstantHeading(new Vector2d(2, -65))
                 .turn(Math.toRadians(90));
 
-//                .lineToY(-50)
-//                .afterTime(2.2, robot.slidesDown())
-//                .waitSeconds(1)
-//                .turn(Math.toRadians(180))
-//                .afterTime(3.2, robot.wall())
-//                .strafeToConstantHeading(new Vector2d(45, -85))
-//                .afterTime(3.4, robot.closeBack())
-//                .afterTime(3.7, robot.scoreChamber())
-//                .waitSeconds(1)
-//                .strafeToConstantHeading(new Vector2d(0, -60))
-//                .afterTime(4.2, robot.slidesDown())
-//                .turn(Math.toRadians(180));
-
         TrajectoryActionBuilder traj3 = drive.actionBuilder(initialPose)
                 .afterTime(0, robot.highChamber())
                 .waitSeconds(1.5)
                 .strafeToConstantHeading(new Vector2d(0, -40))
                 .afterTime(1, robot.scoreChamber()) //1.5
-                .afterTime(1.5, robot.openBack());
+                .afterTime(1.5, robot.openBack())
+                .turn(Math.toRadians(-90));
 
         TrajectoryActionBuilder traj4 = drive.actionBuilder(initialPose)
+                .waitSeconds(1)
+                .afterTime(0.5, robot.slidesDown())
+                .turn(Math.toRadians(-90))
+                .strafeToConstantHeading(new Vector2d(-40, -40))
+                .afterTime(2, robot.extendOut())
+                .afterTime(2.02, robot.frontClose());
+
+        TrajectoryActionBuilder traj6 = drive.actionBuilder(initialPose)
                 .waitSeconds(1)
                 .strafeToConstantHeading(new Vector2d(50, -75))
                 .afterTime(0.5, robot.slidesDown())
                 .waitSeconds(10);
-//
 
 
         Action CloseOut1 = traj1.endTrajectory().fresh().build();
-
         Action CloseOut2 = traj2.endTrajectory().fresh().build();
-
         Action CloseOut3 = traj3.endTrajectory().fresh().build();
         Action CloseOut4 = traj4.endTrajectory().fresh().build();
 

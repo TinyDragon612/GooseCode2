@@ -100,11 +100,53 @@ public class BabyMode extends LinearOpMode {
         if (opModeIsActive()) {
             while (opModeIsActive()) {
 
-                rightFront.setPower(((gamepad1.left_stick_y + gamepad1.left_stick_x)) + (gamepad1.right_stick_x));
-                leftFront.setPower(((-gamepad1.left_stick_y + gamepad1.left_stick_x)) + ((gamepad1.right_stick_x)));
-                rightBack.setPower(((gamepad1.left_stick_y + -gamepad1.left_stick_x)) + (gamepad1.right_stick_x));
-                leftBack.setPower(((-gamepad1.left_stick_y + -gamepad1.left_stick_x)) + (gamepad1.right_stick_x));
+                rightFront.setPower(((gamepad1.left_stick_y + gamepad1.left_stick_x)* 0.25) + (gamepad1.right_stick_x) * 0.25);
+                leftFront.setPower(((-gamepad1.left_stick_y + gamepad1.left_stick_x)* 0.25) + (gamepad1.right_stick_x) * 0.25);
+                rightBack.setPower(((gamepad1.left_stick_y + -gamepad1.left_stick_x)* 0.25) + (gamepad1.right_stick_x)* 0.25 );
+                leftBack.setPower(((-gamepad1.left_stick_y + -gamepad1.left_stick_x)* 0.25) + (gamepad1.right_stick_x)* 0.25);
 
+                if (gamepad1.left_bumper) {
+                    frontR.setPosition(1);
+                    frontL.setPosition(0);
+                    clawState = false;
+                }
+
+                if (gamepad1.right_bumper) {
+                    if (clawState) {
+                        frontR.setPosition(0.8);
+                        frontL.setPosition(0.20);
+
+                    } else {
+                        frontR.setPosition(0.60);
+                        frontL.setPosition(0.40);
+                    }
+                    if (notPressed > 20) {
+                        clawState = !clawState;
+                    }
+                    notPressed = 0;
+
+                } else {
+                    if (notPressed > 39) {
+                        notPressed = 40;
+                    } else {
+                        notPressed += 1;
+                    }
+                }
+
+                if(gamepad2.dpad_up){
+                    extendR.setPosition(0.70);
+                    extendL.setPosition(0.30);
+                }
+
+                if(gamepad2.dpad_right){
+                    extendR.setPosition(0.85);
+                    extendL.setPosition(0.15);
+                }
+
+                if(gamepad2.dpad_down){
+                    extendR.setPosition(1);
+                    extendL.setPosition(0);
+                }
             }
         }
     }

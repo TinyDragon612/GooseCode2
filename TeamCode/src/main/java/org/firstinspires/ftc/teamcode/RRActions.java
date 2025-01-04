@@ -23,8 +23,6 @@ public class RRActions {
 
     private double cranePower = 0.1;
 
-    private double extendAmount;
-
 
     public RRActions(HardwareMap hardwareMap){
         slides = new MotorMech2(hardwareMap, cranePower, false);
@@ -61,8 +59,6 @@ public class RRActions {
         return new RRActions.highBasket();
     }
 
-
-
     public class highChamber implements Action {
 
         @Override
@@ -95,7 +91,7 @@ public class RRActions {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
 
-            slides.setTargetPosition(1350);
+            slides.setTargetPosition(900);
             return false;
         }
     }
@@ -118,7 +114,7 @@ public class RRActions {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            slides.setTargetPosition(520);
+            slides.setTargetPosition(550);
             return false;
         }
     }
@@ -169,22 +165,65 @@ public class RRActions {
         return new RRActions.closeBack();
     }
 
-    public class specimenClose implements Action {
+    public class extendOut implements Action {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-
-            //specimenLeft.setPosition(0.5);
-            //specimenRight.setPosition(0.8);
+            extendR.setPosition(0.30);
+            extendL.setPosition(0.70);
             return false;
         }
 
+    }
+
+    public Action extendOut() {
+        return new RRActions.extendOut();
+    }
+
+    public class extendIn implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            extendR.setPosition(0);
+            extendL.setPosition(1);
+            return false;
+        }
+    }
+
+    public Action extendIn() {
+        return new RRActions.extendIn();
+    }
+
+    public class frontOpen implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            frontR.setPosition(1);
+            frontL.setPosition(0);
+            return false;
+        }
 
     }
 
-    public Action specimenClose() {
-        return new RRActions.specimenClose();
+    public Action frontOpen() {
+        return new RRActions.frontOpen();
     }
 
+    //new
+
+    public class frontClose implements Action {
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            frontR.setPosition(0.65);
+            frontL.setPosition(0.40);
+            return false;
+        }
+
+    }
+
+    public Action frontClose() {
+        return new RRActions.frontClose();
+    }
 
 }

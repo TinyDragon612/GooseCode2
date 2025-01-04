@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 public class ServoTester extends LinearOpMode {
 
 
-    private ServoImplEx backR, backL, extendR, extendL;
+    private ServoImplEx backR, backL, extendR, extendL, frontR, frontL;
 
 
     @Override
@@ -27,8 +27,8 @@ public class ServoTester extends LinearOpMode {
         telemetry.update();
 
 
-        backR = hardwareMap.get(ServoImplEx.class, "backR");
-        backL = hardwareMap.get(ServoImplEx.class, "backL");
+        frontR = hardwareMap.get(ServoImplEx.class, "frontR");
+        frontL = hardwareMap.get(ServoImplEx.class, "frontL");
         backR = hardwareMap.get(ServoImplEx.class, "backR");
         backL = hardwareMap.get(ServoImplEx.class, "backL");
         extendR = hardwareMap.get(ServoImplEx.class, "extendR");
@@ -47,32 +47,27 @@ public class ServoTester extends LinearOpMode {
                 telemetry.addData("left: ", backL.getPosition());
                 telemetry.update();
 
-                if(gamepad1.dpad_up){
-                    extendL.setPosition(1);
-                }
-
-                if(gamepad1.dpad_down){
-                    extendL.setPosition(0); // out position
-                }
-
-                if(gamepad1.triangle){
-                    extendR.setPosition(1); // out position
-                }
-
-                if(gamepad1.cross){
-                    extendR.setPosition(0);
-                }
-
-                if(gamepad1.right_bumper){
-                    extendR.setPosition(1);
-                    extendL.setPosition(0);
-
-                }
-
-                if(gamepad1.left_bumper){
-                    extendR.setPosition(0.70);
-                    extendL.setPosition(0.30);
-                }
+//                if(gamepad1.dpad_up){
+//                    extendL.setPosition(1);
+//                }
+//
+//                if(gamepad1.dpad_down){
+//                    extendL.setPosition(0); // out position
+//                }
+//
+//                if(gamepad1.triangle){
+//                    extendR.setPosition(1); // out position
+//                }
+//
+//                if(gamepad1.cross){
+//                    extendR.setPosition(0);
+//                }
+//
+//                if(gamepad1.right_bumper){
+//                    extendR.setPosition(1);
+//                    extendL.setPosition(0);
+//
+//                }
                 
 
 //                BACK CLAWS
@@ -88,17 +83,27 @@ public class ServoTester extends LinearOpMode {
 //                }
 
 
-//                FRONT CLAWS
-//                if(gamepad1.right_bumper){
-//                    frontR.setPosition(1);
-//                    frontL.setPosition(0);
-//
-//                }
-//
-//                if(gamepad1.left_bumper){
-//                    frontR.setPosition(0.5);
-//                    frontL.setPosition(0.35);
-//                }
+                //FRONT CLAWS
+                if(gamepad1.right_bumper){
+                    frontR.setPosition(1);
+                    frontL.setPosition(0);
+
+                }
+
+                if(gamepad1.left_bumper){
+                    frontR.setPosition(0);
+                    frontL.setPosition(1);
+                }
+
+                if(gamepad1.cross){
+                    frontR.setPosition(0.70);
+                    frontL.setPosition(0.30);
+                }
+
+                if(gamepad1.circle){
+                    frontR.setPosition(0.8);
+                    frontL.setPosition(0.);
+                }
                 
 
             }

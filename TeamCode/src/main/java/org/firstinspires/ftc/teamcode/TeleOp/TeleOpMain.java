@@ -110,7 +110,9 @@ public class TeleOpMain extends LinearOpMode {
                 telemetry.update();
                 
                 if (gamepad2.triangle) {
-                    move(4000, false); // top basket good
+                    move(4000, false);
+                    extendR.setPosition(0.70);
+                    extendL.setPosition(0.30);// top basket good
                 } else if (gamepad2.circle) {
                     move(1800, false);
                 } else if (gamepad2.cross) {
@@ -122,8 +124,11 @@ public class TeleOpMain extends LinearOpMode {
                         settle_slides();
                     }
                 }
-                else if (gamepad1.cross){
+                else if(gamepad2.right_bumper){
                     move(600, false);
+                }
+                else if (gamepad1.cross){
+                    //move(600, false);
                 }
                 else if(gamepad1.circle){
                     move(right.getCurrentPosition() + 100, false);
@@ -156,7 +161,7 @@ public class TeleOpMain extends LinearOpMode {
                     extendR.setPosition(0.85);
                     extendL.setPosition(0.15);
                 }
-
+//in
                 if(gamepad2.dpad_down){
                     extendR.setPosition(1);
                     extendL.setPosition(0);
@@ -212,11 +217,11 @@ public class TeleOpMain extends LinearOpMode {
 
                 if(gamepad1.right_bumper){
                     if(clawState){
-                        frontR.setPosition(0.8);
-                        frontL.setPosition(0.20);
+                        frontR.setPosition(0.80);
+                        frontL.setPosition(0.25);
 
                     }else{
-                        frontR.setPosition(0.60);
+                        frontR.setPosition(0.65);
                         frontL.setPosition(0.40);
                     }
                     if(notPressed>20){
@@ -233,6 +238,28 @@ public class TeleOpMain extends LinearOpMode {
 
 
                     if(gamepad1.touchpad){
+                        if(motorState){
+                            right.setMotorDisable();
+                            left.setMotorDisable();
+
+                        }else{
+                            right.setMotorEnable();
+                            left.setMotorEnable();
+                        }
+                        if(notPressed>20){
+                            motorState = !motorState;
+                        }
+                        notPressed = 0;
+
+                    }else {
+                        if (notPressed > 39) {
+                            notPressed = 40;
+                        } else {
+                            notPressed += 1;
+                        }
+                    }
+
+                    if(gamepad2.touchpad){
                         if(motorState){
                             right.setMotorDisable();
                             left.setMotorDisable();

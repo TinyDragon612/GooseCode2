@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
 import com.acmerobotics.roadrunner.ftc.RawEncoder;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -13,8 +14,9 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
+@Disabled
+
 @TeleOp(name= "ServoTester", group="Linear Opmode")
-//@Disabled
 public class ServoTester extends LinearOpMode {
 
 

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -10,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
+@Disabled
 @TeleOp(name= "BabyMode", group="Linear Opmode")
 //@Disabled
 public class BabyMode extends LinearOpMode {

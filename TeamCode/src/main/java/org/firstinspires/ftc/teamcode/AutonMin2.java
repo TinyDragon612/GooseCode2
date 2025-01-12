@@ -49,7 +49,7 @@ public class AutonMin2 extends LinearOpMode{
                 .afterTime(0.05, robot.closeBack())
                 .afterTime(0.2, robot.wallBump())
                 .waitSeconds(2)
-                .strafeToConstantHeading(new Vector2d(10, -65))
+                .strafeToConstantHeading(new Vector2d(10, -55))
                 .turn(Math.toRadians(90));
 
         TrajectoryActionBuilder traj3 = drive.actionBuilder(initialPose)

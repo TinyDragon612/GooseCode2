@@ -45,6 +45,8 @@ public class TeleOpMain extends LinearOpMode {
 
     ElapsedTime slideTimer = new ElapsedTime();
 
+    int h = 0;
+
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -128,7 +130,7 @@ public class TeleOpMain extends LinearOpMode {
                     move(600, false);
                 }
                 else if (gamepad1.cross){
-                    //move(600, false);
+                    move(600, false);
                 }
                 else if(gamepad1.circle){
                     move(right.getCurrentPosition() + 100, false);
@@ -136,11 +138,17 @@ public class TeleOpMain extends LinearOpMode {
                 else if(gamepad1.dpad_up){
                     //move(2800, false);
                     movevertically(hang, 4700, 1);
+                    h = 4700;
 
                 }
                 else if(gamepad1.dpad_down){
                     //move(2230, false);
                     movevertically(hang, 3175, 1);
+                    h = 3175;
+                }
+                else if(gamepad1.dpad_left){
+                    movevertically(hang, -h, 1);
+                    h = 0;
                 }
                 else if(gamepad2.left_trigger > 0 || gamepad2.right_trigger > 0) {
                     move(gamepad2.left_trigger - gamepad2.right_trigger, true);

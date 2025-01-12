@@ -59,20 +59,20 @@ public class ExtraChamber extends OpMode {
 
     /** Start Pose of our robot */
     private final Pose startPose = new Pose(9, 70, Math.toRadians(180));
-    private final Pose scorePrePose = new Pose(42.152,76.995, Math.toRadians(180));
-    private final Pose pushSplineControl1 = new Pose(10.599, 24.000);
-    private final Pose pushSplineControl2 = new Pose(43.000, 40.000);
-    private final Pose pushSplineEnd = new Pose(61.523, 23.513, Math.toRadians(0));
-    private final Pose pushFirst = new Pose(5.482, 23.756);
-    private final Pose returnSecond = new Pose(60.914, 23.756);
-    private final Pose strafeSecond = new Pose(60.792, 10.234);
-    private final Pose pushSecond =  new Pose(4.995, 10.234);
-    private final Pose grabSplineControl = new Pose(13.000, 25.000);
-    private final Pose grabPose = new Pose(3.411, 24.000, Math.toRadians(0));
-    private final Pose scoreFirstPose = new Pose(42.518, 71.635, Math.toRadians(180));
-    private final Pose scoreSecondPose = new Pose(42.518, 73.635, Math.toRadians(180));
-    private final Pose scoreThirdPose = new Pose(42.518, 78.635, Math.toRadians(180));
-    private final Pose parkPose = new Pose(3.046, 24.000);
+    private final Pose scorePrePose = new Pose(42.2,77, Math.toRadians(180));
+    private final Pose pushSplineControl1 = new Pose(10.6, 24);
+    private final Pose pushSplineControl2 = new Pose(43, 40);
+    private final Pose pushSplineEnd = new Pose(61.5, 23.5, Math.toRadians(0));
+    private final Pose pushFirst = new Pose(5.5, 23.8);
+    private final Pose returnSecond = new Pose(60.9, 23.8);
+    private final Pose strafeSecond = new Pose(60.8, 10.2);
+    private final Pose pushSecond =  new Pose(5, 10.2);
+    private final Pose grabSplineControl = new Pose(13, 25);
+    private final Pose grabPose = new Pose(3.4, 24, Math.toRadians(0));
+    private final Pose scoreFirstPose = new Pose(42.5, 71.6, Math.toRadians(180));
+    private final Pose scoreSecondPose = new Pose(42.5, 73.6, Math.toRadians(180));
+    private final Pose scoreThirdPose = new Pose(42.5, 78.6, Math.toRadians(180));
+    private final Pose parkPose = new Pose(3, 24);
     /* These are our Paths and PathChains that we will define in buildPaths() */
     private Path scorePreload;
     private PathChain pushSpline, pushBlocks, grabSpline, scoreFirst, grabSecond, scoreSecond, grabThird, scoreThird, park;
@@ -80,7 +80,7 @@ public class ExtraChamber extends OpMode {
      * It is necessary to do this so that all the paths are built before the auto starts. **/
     public void buildPaths() {
         scorePreload = new Path(new BezierLine(new Point(startPose), new Point(scorePrePose)));
-        scorePreload.setConstantHeadingInterpolation(135);
+        scorePreload.setConstantHeadingInterpolation(180);
 
         pushSpline = follower.pathBuilder()
                 .addPath(new BezierCurve(new Point(scorePrePose), new Point(pushSplineControl1),new Point(pushSplineControl2), new Point(pushSplineEnd)))
@@ -121,6 +121,10 @@ public class ExtraChamber extends OpMode {
                 .addPath(new BezierLine(new Point(scoreThirdPose), new Point(parkPose)))
                 .setConstantHeadingInterpolation(180)
                 .build();
+        park = follower.pathBuilder()
+                .addPath(new BezierLine(new Point(scoreThirdPose), new Point(parkPose)))
+                .setConstantHeadingInterpolation(180)
+                .build();
 
     }
 
@@ -142,8 +146,7 @@ public class ExtraChamber extends OpMode {
                 break;
             case 1:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(follower.getPose().getX() > (scorePrePose.getX() - 1) && follower.getPose().getY() > (scorePrePose.getY() - 1)
-                && slides.getCurrentLeftPosition() > slides.targetPosition - 10) {
+                if(!follower.isBusy() && slides.getCurrentLeftPosition() > slides.targetPosition - 10) {
                     slides.setTargetPosition(1500);
                     setPathState(2);
                 }
@@ -157,21 +160,20 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 3:
-                if(follower.getPose().getX() > (pushSplineEnd.getX() - 1) && follower.getPose().getY() > (pushSplineEnd.getY() - 1)){
+                if(!follower.isBusy()){
                     follower.followPath(pushBlocks, false);
                     setPathState(4);
                 }
                 break;
             case 4:
-                if(follower.getPose().getX() > (pushSecond.getX() - 1) && follower.getPose().getY() > (pushSecond.getY() - 1)){
+                if(!follower.isBusy()){
                     follower.followPath(grabSpline, true);
                     slides.setTargetPosition(550);
                     setPathState(5);
                 }
                 break;
             case 5:
-                if(follower.getPose().getX() > (grabPose.getX() - 1) && follower.getPose().getY() > (grabPose.getY() - 1)
-                        && slides.getCurrentLeftPosition() > slides.targetPosition - 10){
+                if(!follower.isBusy() && slides.getCurrentLeftPosition() > slides.targetPosition - 10){
                     closeBack();
                     slides.setTargetPosition(1800);
                     setPathState(6);
@@ -185,8 +187,7 @@ public class ExtraChamber extends OpMode {
                 break;
             case 7:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(follower.getPose().getX() > (scoreFirstPose.getX() - 1) && follower.getPose().getY() > (scoreFirstPose.getY() - 1)
-                        && slides.getCurrentLeftPosition() > slides.targetPosition - 10) {
+                if(!follower.isBusy() && slides.getCurrentLeftPosition() > slides.targetPosition - 10) {
                     slides.setTargetPosition(1500);
                     setPathState(8);
                 }
@@ -200,8 +201,7 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 9:
-                if(follower.getPose().getX() > (grabPose.getX() - 1) && follower.getPose().getY() > (grabPose.getY() - 1)
-                        && slides.getCurrentLeftPosition() > slides.targetPosition - 10){
+                if(!follower.isBusy() && slides.getCurrentLeftPosition() > slides.targetPosition - 10){
                     closeBack();
                     slides.setTargetPosition(1800);
                     setPathState(10);
@@ -215,8 +215,7 @@ public class ExtraChamber extends OpMode {
                 break;
             case 11:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(follower.getPose().getX() > (scoreSecondPose.getX() - 1) && follower.getPose().getY() > (scoreSecondPose.getY() - 1)
-                        && slides.getCurrentLeftPosition() > slides.targetPosition - 10) {
+                if(!follower.isBusy() && slides.getCurrentLeftPosition() > slides.targetPosition - 10) {
                     slides.setTargetPosition(1500);
                     setPathState(12);
                 }
@@ -230,8 +229,7 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 13:
-                if(follower.getPose().getX() > (grabPose.getX() - 1) && follower.getPose().getY() > (grabPose.getY() - 1)
-                        && slides.getCurrentLeftPosition() > slides.targetPosition - 10){
+                if(!follower.isBusy() && slides.getCurrentLeftPosition() > slides.targetPosition - 10){
                     closeBack();
                     slides.setTargetPosition(1800);
                     setPathState(14);
@@ -245,8 +243,7 @@ public class ExtraChamber extends OpMode {
                 break;
             case 15:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(follower.getPose().getX() > (scoreThirdPose.getX() - 1) && follower.getPose().getY() > (scoreThirdPose.getY() - 1)
-                        && slides.getCurrentLeftPosition() > slides.targetPosition - 10) {
+                if(!follower.isBusy() && slides.getCurrentLeftPosition() > slides.targetPosition - 10) {
                     slides.setTargetPosition(1500);
                     setPathState(16);
                 }
@@ -260,7 +257,7 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 17:
-                if(follower.getPose().getX() > (parkPose.getX() - 1) && follower.getPose().getY() > (parkPose.getY() - 1)){
+                if(!follower.isBusy()){
                     setPathState(-1);
                 }
                 break;

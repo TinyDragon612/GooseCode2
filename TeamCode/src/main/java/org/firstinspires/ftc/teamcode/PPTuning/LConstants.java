@@ -6,8 +6,8 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 public class LConstants {
     static {
-        TwoWheelConstants.forwardTicksToInches = 0.002937;
-        TwoWheelConstants.strafeTicksToInches = 0.002977;
+        TwoWheelConstants.forwardTicksToInches = 0.003;
+        TwoWheelConstants.strafeTicksToInches = 0.003;
         TwoWheelConstants.forwardY = -4.8125;
         TwoWheelConstants.strafeX = -6.34375;
         TwoWheelConstants.forwardEncoder_HardwareMapName = "rightFront";

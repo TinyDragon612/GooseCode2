@@ -27,7 +27,7 @@ public class FConstants {
         FollowerConstants.translationalPIDFCoefficients.setCoefficients(0.5,0.002,0.05,0);
         FollowerConstants.headingPIDFCoefficients.setCoefficients(2,0.01,0.1,0);
         FollowerConstants.zeroPowerAccelerationMultiplier = 4;
-        FollowerConstants.drivePIDFCoefficients.setCoefficients(0.007,0,0.00003,0.6,0);
+        FollowerConstants.drivePIDFCoefficients.setCoefficients(0.015,0,0.00005,0.6,0); // 0.007, 0, 0.00005
         FollowerConstants.centripetalScaling = 0.0002;
     }
 }

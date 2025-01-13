@@ -58,15 +58,15 @@ public class ExtraChamber extends OpMode {
      * Lets assume the Robot is facing the human player and we want to score in the bucket */
 
     /** Start Pose of our robot */
-    private final Pose startPose = new Pose(9, 70, Math.toRadians(180));
+    private final Pose startPose = new Pose(9, 72, Math.toRadians(180));
     private final Pose scorePrePose = new Pose(42.2,77, Math.toRadians(180));
-    private final Pose pushSplineControl1 = new Pose(10.6, 24);
-    private final Pose pushSplineControl2 = new Pose(43, 40);
-    private final Pose pushSplineEnd = new Pose(61.5, 23.5, Math.toRadians(0));
-    private final Pose pushFirst = new Pose(5.5, 23.8);
-    private final Pose returnSecond = new Pose(60.9, 23.8);
-    private final Pose strafeSecond = new Pose(60.8, 10.2);
-    private final Pose pushSecond =  new Pose(5, 10.2);
+    private final Pose pushSplineControl1 = new Pose(9, 38);
+    private final Pose pushSplineEnd = new Pose(50, 32, Math.toRadians(0));
+    private final Pose strafeFirst = new Pose(50, 20, Math.toRadians(0));
+    private final Pose pushFirst = new Pose(5, 20);
+    private final Pose returnSecond = new Pose(50, 20);
+    private final Pose strafeSecond = new Pose(50, 10);
+    private final Pose pushSecond =  new Pose(5, 10);
     private final Pose grabSplineControl = new Pose(13, 25);
     private final Pose grabPose = new Pose(3.4, 24, Math.toRadians(0));
     private final Pose scoreFirstPose = new Pose(42.5, 71.6, Math.toRadians(180));
@@ -80,16 +80,21 @@ public class ExtraChamber extends OpMode {
      * It is necessary to do this so that all the paths are built before the auto starts. **/
     public void buildPaths() {
         scorePreload = new Path(new BezierLine(new Point(startPose), new Point(scorePrePose)));
-        scorePreload.setConstantHeadingInterpolation(180);
+        scorePreload.setConstantHeadingInterpolation(Math.toRadians(180));
 
         pushSpline = follower.pathBuilder()
-                .addPath(new BezierCurve(new Point(scorePrePose), new Point(pushSplineControl1),new Point(pushSplineControl2), new Point(pushSplineEnd)))
+                .addPath(new BezierCurve(new Point(scorePrePose), new Point(pushSplineControl1), new Point(pushSplineEnd)))
                 .setLinearHeadingInterpolation(scorePrePose.getHeading(), pushSplineEnd.getHeading())
                 .build();
         pushBlocks  = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(pushSplineEnd), new Point(pushFirst)))
+                .addPath(new BezierLine(new Point(pushSplineEnd), new Point(strafeFirst)))
+                .setConstantHeadingInterpolation(0)
+                .addPath(new BezierLine(new Point(strafeFirst), new Point(pushFirst)))
+                .setConstantHeadingInterpolation(0)
                 .addPath(new BezierLine(new Point(pushFirst), new Point(returnSecond)))
+                .setConstantHeadingInterpolation(0)
                 .addPath(new BezierLine(new Point(returnSecond), new Point(strafeSecond)))
+                .setConstantHeadingInterpolation(0)
                 .addPath(new BezierLine(new Point(strafeSecond), new Point(pushSecond)))
                 .setConstantHeadingInterpolation(0)
                 .build();
@@ -116,10 +121,6 @@ public class ExtraChamber extends OpMode {
         grabThird = follower.pathBuilder()
                 .addPath(new BezierLine(new Point(scoreSecondPose), new Point(grabPose)))
                 .setLinearHeadingInterpolation(scoreSecondPose.getHeading(), grabPose.getHeading())
-                .build();
-        grabThird = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(scoreThirdPose), new Point(parkPose)))
-                .setConstantHeadingInterpolation(180)
                 .build();
         park = follower.pathBuilder()
                 .addPath(new BezierLine(new Point(scoreThirdPose), new Point(parkPose)))

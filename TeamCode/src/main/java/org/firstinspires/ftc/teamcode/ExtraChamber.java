@@ -58,21 +58,23 @@ public class ExtraChamber extends OpMode {
      * Lets assume the Robot is facing the human player and we want to score in the bucket */
 
     /** Start Pose of our robot */
-    private final Pose startPose = new Pose(9, 72, Math.toRadians(180));
-    private final Pose scorePrePose = new Pose(42.2,77, Math.toRadians(180));
-    private final Pose pushSplineControl1 = new Pose(9, 38);
-    private final Pose pushSplineEnd = new Pose(50, 32, Math.toRadians(0));
-    private final Pose strafeFirst = new Pose(50, 20, Math.toRadians(0));
-    private final Pose pushFirst = new Pose(5, 20);
-    private final Pose returnSecond = new Pose(50, 20);
-    private final Pose strafeSecond = new Pose(50, 10);
-    private final Pose pushSecond =  new Pose(5, 10);
-    private final Pose grabSplineControl = new Pose(13, 25);
-    private final Pose grabPose = new Pose(3.4, 24, Math.toRadians(0));
-    private final Pose scoreFirstPose = new Pose(42.5, 71.6, Math.toRadians(180));
-    private final Pose scoreSecondPose = new Pose(42.5, 73.6, Math.toRadians(180));
-    private final Pose scoreThirdPose = new Pose(42.5, 78.6, Math.toRadians(180));
-    private final Pose parkPose = new Pose(3, 24);
+    private final Pose startPose = new Pose(9, 70, Math.toRadians(180));
+    private final Pose scorePrePose = new Pose(39,74.5, Math.toRadians(180));
+    private final Pose pushSplineControl1 = new Pose(10.6, 35);
+    private final Pose pushSplineEnd = new Pose(20, 26, Math.toRadians(0));
+    private final Pose returnFirst = new Pose(45,26);
+    private final Pose strafeFirst = new Pose(45, 16);
+    private final Pose pushFirst = new Pose(4, 16);
+    private final Pose returnSecond = new Pose(45, 16);
+    private final Pose strafeSecond = new Pose(45, 5);
+    private final Pose pushSecond =  new Pose(3, 5);
+    private final Pose grabSplineControl = new Pose(20, 25);
+    private final Pose grabPose = new Pose(-2.5, 24, Math.toRadians(0));
+    private final Pose scoreFirstPose = new Pose(40, 67, Math.toRadians(180));
+    private final Pose scoreSecondPose = new Pose(40, 69, Math.toRadians(180));
+    private final Pose safetyScore = new Pose(37, 69, Math.toRadians(180));
+    private final Pose scoreThirdPose = new Pose(40, 71, Math.toRadians(180));
+    private final Pose parkPose = new Pose(8, 24);
     /* These are our Paths and PathChains that we will define in buildPaths() */
     private Path scorePreload;
     private PathChain pushSpline, pushBlocks, grabSpline, scoreFirst, grabSecond, scoreSecond, grabThird, scoreThird, park;
@@ -87,7 +89,9 @@ public class ExtraChamber extends OpMode {
                 .setLinearHeadingInterpolation(scorePrePose.getHeading(), pushSplineEnd.getHeading())
                 .build();
         pushBlocks  = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(pushSplineEnd), new Point(strafeFirst)))
+                .addPath(new BezierLine(new Point(pushSplineEnd), new Point(returnFirst)))
+                .setConstantHeadingInterpolation(0)
+                .addPath(new BezierLine(new Point(returnFirst), new Point(strafeFirst)))
                 .setConstantHeadingInterpolation(0)
                 .addPath(new BezierLine(new Point(strafeFirst), new Point(pushFirst)))
                 .setConstantHeadingInterpolation(0)
@@ -119,11 +123,15 @@ public class ExtraChamber extends OpMode {
                 .setLinearHeadingInterpolation(scoreFirstPose.getHeading(), grabPose.getHeading())
                 .build();
         grabThird = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(scoreSecondPose), new Point(grabPose)))
-                .setLinearHeadingInterpolation(scoreSecondPose.getHeading(), grabPose.getHeading())
+                .addPath(new BezierLine(new Point(scoreSecondPose), new Point(safetyScore)))
+                .setConstantHeadingInterpolation(Math.toRadians(180))
+                .addPath(new BezierLine(new Point(safetyScore), new Point(grabPose)))
+                .setLinearHeadingInterpolation(safetyScore.getHeading(), grabPose.getHeading())
                 .build();
         park = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(scoreThirdPose), new Point(parkPose)))
+                .addPath(new BezierLine(new Point(scoreThirdPose), new Point(safetyScore)))
+                .setConstantHeadingInterpolation(Math.toRadians(180))
+                .addPath(new BezierLine(new Point(safetyScore), new Point(parkPose)))
                 .setConstantHeadingInterpolation(180)
                 .build();
 
@@ -142,8 +150,10 @@ public class ExtraChamber extends OpMode {
         switch (pathState) {
             case 0:
                 slides.setTargetPosition(1800);
-                follower.followPath(scorePreload, true);
-                setPathState(1);
+                if(pathTimer.getElapsedTimeSeconds() > 0.75) {
+                    follower.followPath(scorePreload, true);
+                    setPathState(1);
+                }
                 break;
             case 1:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
@@ -153,7 +163,7 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 2:
-                if(slides.getCurrentLeftPosition() < 1500){
+                if(slides.getCurrentLeftPosition() < 1550){
                     openBack();
                     slides.setTargetPosition(0);
                     follower.followPath(pushSpline, false);
@@ -169,7 +179,7 @@ public class ExtraChamber extends OpMode {
             case 4:
                 if(!follower.isBusy()){
                     follower.followPath(grabSpline, true);
-                    slides.setTargetPosition(550);
+                    slides.setTargetPosition(450);
                     setPathState(5);
                 }
                 break;
@@ -181,7 +191,7 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 6:
-                if(slides.getCurrentRightPosition() > 600){
+                if(slides.getCurrentRightPosition() > 700){
                     follower.followPath(scoreFirst, true);
                     setPathState(7);
                 }
@@ -194,9 +204,9 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 8:
-                if(slides.getCurrentLeftPosition() < 1500){
+                if(slides.getCurrentLeftPosition() < 1550){
                     openBack();
-                    slides.setTargetPosition(550);
+                    slides.setTargetPosition(450);
                     follower.followPath(grabSecond, true);
                     setPathState(9);
                 }
@@ -209,7 +219,7 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 10:
-                if(slides.getCurrentRightPosition() > 600){
+                if(slides.getCurrentRightPosition() > 700){
                     follower.followPath(scoreSecond, true);
                     setPathState(11);
                 }
@@ -222,9 +232,9 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 12:
-                if(slides.getCurrentLeftPosition() < 1500){
+                if(slides.getCurrentLeftPosition() < 1550){
                     openBack();
-                    slides.setTargetPosition(550);
+                    slides.setTargetPosition(450);
                     follower.followPath(grabThird, true);
                     setPathState(13);
                 }
@@ -237,7 +247,7 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 14:
-                if(slides.getCurrentRightPosition() > 600){
+                if(slides.getCurrentRightPosition() > 700){
                     follower.followPath(scoreThird, true);
                     setPathState(15);
                 }
@@ -250,9 +260,9 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 16:
-                if(slides.getCurrentLeftPosition() < 1500){
+                if(slides.getCurrentLeftPosition() < 1550){
                     openBack();
-                    slides.setTargetPosition(550);
+                    slides.setTargetPosition(0);
                     follower.followPath(park, false);
                     setPathState(17);
                 }

@@ -8,8 +8,8 @@ public class LConstants {
     static {
         TwoWheelConstants.forwardTicksToInches = 0.003;
         TwoWheelConstants.strafeTicksToInches = 0.003;
-        TwoWheelConstants.forwardY = -4.8125;
-        TwoWheelConstants.strafeX = -6.34375;
+        TwoWheelConstants.forwardY = -5.09375;
+        TwoWheelConstants.strafeX = -6.375;
         TwoWheelConstants.forwardEncoder_HardwareMapName = "rightFront";
         TwoWheelConstants.strafeEncoder_HardwareMapName = "leftBack";
         TwoWheelConstants.forwardEncoderDirection = Encoder.REVERSE;

@@ -59,21 +59,24 @@ public class ExtraChamber extends OpMode {
 
     /** Start Pose of our robot */
     private final Pose startPose = new Pose(9, 70, Math.toRadians(180));
-    private final Pose scorePrePose = new Pose(39,74.5, Math.toRadians(180));
+    private final Pose scorePrePose = new Pose(39,75, Math.toRadians(180));
     private final Pose pushSplineControl1 = new Pose(10.6, 35);
     private final Pose pushSplineEnd = new Pose(20, 26, Math.toRadians(0));
     private final Pose returnFirst = new Pose(45,26);
-    private final Pose strafeFirst = new Pose(45, 16);
-    private final Pose pushFirst = new Pose(4, 16);
-    private final Pose returnSecond = new Pose(45, 16);
-    private final Pose strafeSecond = new Pose(45, 5);
-    private final Pose pushSecond =  new Pose(3, 5);
-    private final Pose grabSplineControl = new Pose(20, 25);
-    private final Pose grabPose = new Pose(-2.5, 24, Math.toRadians(0));
-    private final Pose scoreFirstPose = new Pose(40, 67, Math.toRadians(180));
-    private final Pose scoreSecondPose = new Pose(40, 69, Math.toRadians(180));
+    private final Pose strafeFirst = new Pose(45, 15);
+    private final Pose pushFirst = new Pose(16, 15);
+    private final Pose returnSecond = new Pose(45, 15);
+    private final Pose strafeSecond = new Pose(45, 3);
+    private final Pose pushSecondControl = new Pose(155, 3);
+    private final Pose pushSecond =  new Pose(10, 3);
+    private final Pose grabSplineControl = new Pose(30, 25);
+    private final Pose grabForwardPose = new Pose(-5, 24);
+    private final Pose grabPose = new Pose(5, 24, Math.toRadians(0));
+    //private final Pose grabPose = new Pose(-2.5 , 24, Math.toRadians(0));
+    private final Pose scoreFirstPose = new Pose(40, 72, Math.toRadians(180));
+    private final Pose scoreSecondPose = new Pose(40, 70, Math.toRadians(180));
     private final Pose safetyScore = new Pose(37, 69, Math.toRadians(180));
-    private final Pose scoreThirdPose = new Pose(40, 71, Math.toRadians(180));
+    private final Pose scoreThirdPose = new Pose(40, 67, Math.toRadians(180));
     private final Pose parkPose = new Pose(8, 24);
     /* These are our Paths and PathChains that we will define in buildPaths() */
     private Path scorePreload;
@@ -91,42 +94,63 @@ public class ExtraChamber extends OpMode {
         pushBlocks  = follower.pathBuilder()
                 .addPath(new BezierLine(new Point(pushSplineEnd), new Point(returnFirst)))
                 .setConstantHeadingInterpolation(0)
+                .setPathEndTimeoutConstraint(20)
+                .setPathEndTValueConstraint(0.95)
                 .addPath(new BezierLine(new Point(returnFirst), new Point(strafeFirst)))
+                .setPathEndTimeoutConstraint(20)
+                .setPathEndTValueConstraint(0.95)
                 .setConstantHeadingInterpolation(0)
                 .addPath(new BezierLine(new Point(strafeFirst), new Point(pushFirst)))
+                .setPathEndTimeoutConstraint(20)
+                .setPathEndTValueConstraint(0.95)
                 .setConstantHeadingInterpolation(0)
-                .addPath(new BezierLine(new Point(pushFirst), new Point(returnSecond)))
-                .setConstantHeadingInterpolation(0)
-                .addPath(new BezierLine(new Point(returnSecond), new Point(strafeSecond)))
-                .setConstantHeadingInterpolation(0)
-                .addPath(new BezierLine(new Point(strafeSecond), new Point(pushSecond)))
+                //from here on is new code
+                .addPath(new BezierCurve(new Point(pushFirst), new Point(pushSecondControl), new Point(pushSecond)))
                 .setConstantHeadingInterpolation(0)
                 .build();
+//                .addPath(new BezierLine(new Point(pushFirst), new Point(returnSecond)))
+//                .setPathEndTimeoutConstraint(100)
+//                .setPathEndTValueConstraint(0.95)
+//                .setConstantHeadingInterpolation(0)
+//                .addPath(new BezierLine(new Point(returnSecond), new Point(strafeSecond)))
+//                .setPathEndTimeoutConstraint(100)
+//                .setPathEndTValueConstraint(0.95)
+//                .setConstantHeadingInterpolation(0)
+//                .addPath(new BezierLine(new Point(strafeSecond), new Point(pushSecond)))
+//                .setPathEndTimeoutConstraint(100)
+//                .setPathEndTValueConstraint(0.95)
+//                .setConstantHeadingInterpolation(0)
+//                .build();
         grabSpline = follower.pathBuilder()
-                .addPath(new BezierCurve(new Point(pushSecond), new Point(grabSplineControl), new Point(grabPose)))
+                .addPath(new BezierCurve(new Point(pushSecond), new Point(grabSplineControl), new Point(grabForwardPose)))
                 .setConstantHeadingInterpolation(0)
                 .build();
         scoreFirst = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(grabPose), new Point(scoreFirstPose)))
+                .addPath(new BezierLine(new Point(grabForwardPose), new Point(scoreFirstPose)))
                 .setLinearHeadingInterpolation(grabPose.getHeading(), scoreFirstPose.getHeading())
                 .build();
         scoreSecond = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(grabPose), new Point(scoreSecondPose)))
+                .addPath(new BezierLine(new Point(grabForwardPose), new Point(scoreSecondPose)))
                 .setLinearHeadingInterpolation(grabPose.getHeading(), scoreSecondPose.getHeading())
                 .build();
         scoreThird = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(grabPose), new Point(scoreThirdPose)))
+                .addPath(new BezierLine(new Point(grabForwardPose), new Point(scoreThirdPose)))
                 .setLinearHeadingInterpolation(grabPose.getHeading(), scoreThirdPose.getHeading())
                 .build();
         grabSecond = follower.pathBuilder()
                 .addPath(new BezierLine(new Point(scoreFirstPose), new Point(grabPose)))
                 .setLinearHeadingInterpolation(scoreFirstPose.getHeading(), grabPose.getHeading())
+                .setPathEndTimeoutConstraint(500)
+                .addPath(new BezierLine(new Point(grabPose), new Point(grabForwardPose)))
+                .setConstantHeadingInterpolation(0)
                 .build();
         grabThird = follower.pathBuilder()
                 .addPath(new BezierLine(new Point(scoreSecondPose), new Point(safetyScore)))
                 .setConstantHeadingInterpolation(Math.toRadians(180))
                 .addPath(new BezierLine(new Point(safetyScore), new Point(grabPose)))
                 .setLinearHeadingInterpolation(safetyScore.getHeading(), grabPose.getHeading())
+                .addPath(new BezierLine(new Point(grabPose), new Point(grabForwardPose)))
+                .setConstantHeadingInterpolation(grabPose.getHeading())
                 .build();
         park = follower.pathBuilder()
                 .addPath(new BezierLine(new Point(scoreThirdPose), new Point(safetyScore)))
@@ -173,18 +197,20 @@ public class ExtraChamber extends OpMode {
             case 3:
                 if(!follower.isBusy()){
                     follower.followPath(pushBlocks, false);
+                    if(pathTimer.getElapsedTimeSeconds() > 1){
+                        slides.setTargetPosition(455);
+                    }
                     setPathState(4);
                 }
                 break;
             case 4:
                 if(!follower.isBusy()){
                     follower.followPath(grabSpline, true);
-                    slides.setTargetPosition(450);
                     setPathState(5);
                 }
                 break;
             case 5:
-                if(!follower.isBusy() && slides.getCurrentLeftPosition() > slides.targetPosition - 10){
+                if(pathTimer.getElapsedTimeSeconds() > 2 && slides.getCurrentLeftPosition() > slides.targetPosition - 10){
                     closeBack();
                     slides.setTargetPosition(1800);
                     setPathState(6);
@@ -212,7 +238,7 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 9:
-                if(!follower.isBusy() && slides.getCurrentLeftPosition() > slides.targetPosition - 10){
+                if(pathTimer.getElapsedTimeSeconds() > 3 && slides.getCurrentLeftPosition() > slides.targetPosition - 10){
                     closeBack();
                     slides.setTargetPosition(1800);
                     setPathState(10);
@@ -240,7 +266,7 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 13:
-                if(!follower.isBusy() && slides.getCurrentLeftPosition() > slides.targetPosition - 10){
+                if(pathTimer.getElapsedTimeSeconds() > 3 && slides.getCurrentLeftPosition() > slides.targetPosition - 10){
                     closeBack();
                     slides.setTargetPosition(1800);
                     setPathState(14);

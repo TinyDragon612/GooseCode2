@@ -116,7 +116,7 @@ public class TeleOpMain extends LinearOpMode {
                     extendR.setPosition(0.70);
                     extendL.setPosition(0.30);// top basket good
                 } else if (gamepad2.circle) {
-                    move(1800, false);
+                    move(1825, false);
                 } else if (gamepad2.cross) {
                     move(1500, false);
                 } else if(gamepad2.square){
@@ -247,6 +247,7 @@ public class TeleOpMain extends LinearOpMode {
 
                     if(gamepad1.touchpad){
                         if(motorState){
+                            reset();
                             right.setMotorDisable();
                             left.setMotorDisable();
 
@@ -326,8 +327,8 @@ public class TeleOpMain extends LinearOpMode {
                 }
 
                 if(gamepad1.right_trigger > 0){
-                    backR.setPosition(0.75);
-                    backL.setPosition(0.30);
+                    backR.setPosition(0.73); //75
+                    backL.setPosition(0.32); //30
                 }
 
             }

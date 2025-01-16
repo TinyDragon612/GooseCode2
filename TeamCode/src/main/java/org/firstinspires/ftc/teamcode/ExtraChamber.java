@@ -70,11 +70,10 @@ public class ExtraChamber extends OpMode {
     private final Pose pushSecondControl = new Pose(155, 3);
     private final Pose pushSecond =  new Pose(10, 3);
     private final Pose grabSplineControl = new Pose(30, 25);
-    private final Pose grabForwardPose = new Pose(-5, 24);
+    private final Pose grabForwardPose = new Pose(-2, 24);
     private final Pose grabPose = new Pose(5, 24, Math.toRadians(0));
-    //private final Pose grabPose = new Pose(-2.5 , 24, Math.toRadians(0));
     private final Pose scoreFirstPose = new Pose(40, 72, Math.toRadians(180));
-    private final Pose scoreSecondPose = new Pose(40, 70, Math.toRadians(180));
+    private final Pose scoreSecondPose = new Pose(41, 69, Math.toRadians(180));
     private final Pose safetyScore = new Pose(37, 69, Math.toRadians(180));
     private final Pose scoreThirdPose = new Pose(40, 67, Math.toRadians(180));
     private final Pose parkPose = new Pose(8, 24);
@@ -104,21 +103,21 @@ public class ExtraChamber extends OpMode {
                 .setPathEndTimeoutConstraint(20)
                 .setPathEndTValueConstraint(0.95)
                 .setConstantHeadingInterpolation(0)
-                //from here on is new code
-                .addPath(new BezierCurve(new Point(pushFirst), new Point(pushSecondControl), new Point(pushSecond)))
+                .addPath(new BezierLine(new Point(pushFirst), new Point(returnSecond)))
+                .setPathEndTimeoutConstraint(100)
+                .setPathEndTValueConstraint(0.95)
+                .setConstantHeadingInterpolation(0)
+                .addPath(new BezierLine(new Point(returnSecond), new Point(strafeSecond)))
+                .setPathEndTimeoutConstraint(100)
+                .setPathEndTValueConstraint(0.95)
+                .setConstantHeadingInterpolation(0)
+                .addPath(new BezierLine(new Point(strafeSecond), new Point(pushSecond)))
+                .setPathEndTimeoutConstraint(100)
+                .setPathEndTValueConstraint(0.95)
                 .setConstantHeadingInterpolation(0)
                 .build();
-//                .addPath(new BezierLine(new Point(pushFirst), new Point(returnSecond)))
-//                .setPathEndTimeoutConstraint(100)
-//                .setPathEndTValueConstraint(0.95)
-//                .setConstantHeadingInterpolation(0)
-//                .addPath(new BezierLine(new Point(returnSecond), new Point(strafeSecond)))
-//                .setPathEndTimeoutConstraint(100)
-//                .setPathEndTValueConstraint(0.95)
-//                .setConstantHeadingInterpolation(0)
-//                .addPath(new BezierLine(new Point(strafeSecond), new Point(pushSecond)))
-//                .setPathEndTimeoutConstraint(100)
-//                .setPathEndTValueConstraint(0.95)
+        //from here on is new code
+//                .addPath(new BezierCurve(new Point(pushFirst), new Point(pushSecondControl), new Point(pushSecond)))
 //                .setConstantHeadingInterpolation(0)
 //                .build();
         grabSpline = follower.pathBuilder()
@@ -254,7 +253,7 @@ public class ExtraChamber extends OpMode {
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
                 if(!follower.isBusy() && slides.getCurrentLeftPosition() > slides.targetPosition - 10) {
                     slides.setTargetPosition(1500);
-                    setPathState(12);
+                    setPathState(16);
                 }
                 break;
             case 12:
@@ -279,7 +278,6 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 15:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
                 if(!follower.isBusy() && slides.getCurrentLeftPosition() > slides.targetPosition - 10) {
                     slides.setTargetPosition(1500);
                     setPathState(16);
@@ -295,6 +293,9 @@ public class ExtraChamber extends OpMode {
                 break;
             case 17:
                 if(!follower.isBusy()){
+                    if(pathTimer.getElapsedTimeSeconds() > 2){
+                        slides.setPower(0);
+                    }
                     setPathState(-1);
                 }
                 break;

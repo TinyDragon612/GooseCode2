@@ -61,9 +61,10 @@ public class ExtraChamber2 extends OpMode {
     private final Pose startPose = new Pose(9, 70, Math.toRadians(180));
     private final Pose scorePrePose = new Pose(39,75, Math.toRadians(180));
     private final Pose grabFirstSample = new Pose(10, 12);
-    private final Pose grabFirstSample2 = new Pose(19, 12);
-
-    private final Pose grabSecondSample = new Pose(19, 5);
+    private final Pose grabFirstSample2 = new Pose(16.5, 12);
+    private final Pose turnHelper1 = new Pose(21, 8);
+    private final Pose grabSecondSample = new Pose(16.5, 2);
+    private final Pose turnHelper2 = new Pose(21, 8);
     private final Pose grabForwardPose = new Pose(-5, 24);
     private final Pose grabPose = new Pose(5, 24, Math.toRadians(0));
     private final Pose scoreFirstPose = new Pose(40, 72, Math.toRadians(180));
@@ -86,19 +87,19 @@ public class ExtraChamber2 extends OpMode {
                 .setConstantHeadingInterpolation(Math.toRadians((0)))
                 .build();
         grabSpline2 = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(grabFirstSample), new Point(grabFirstSample)))
+                .addPath(new BezierLine(new Point(grabFirstSample2), new Point(turnHelper1)))
                 .setConstantHeadingInterpolation(Math.toRadians((150)))
                 .build();
         grabSpline3 = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(grabFirstSample), new Point(grabSecondSample)))
+                .addPath(new BezierLine(new Point(turnHelper1), new Point(grabSecondSample)))
                 .setConstantHeadingInterpolation(Math.toRadians((0)))
                 .build();
         grabSpline4 = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(grabSecondSample), new Point(grabSecondSample)))
+                .addPath(new BezierLine(new Point(grabSecondSample), new Point(turnHelper2)))
                 .setConstantHeadingInterpolation(Math.toRadians((150)))
                 .build();
         grabFirstSpecimen = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(grabSecondSample), new Point(grabPose)))
+                .addPath(new BezierLine(new Point(turnHelper2), new Point(grabPose)))
                 .setConstantHeadingInterpolation(Math.toRadians((0)))
                 .addPath(new BezierLine(new Point(grabPose), new Point(grabForwardPose)))
                 .setConstantHeadingInterpolation(Math.toRadians((0)))
@@ -158,7 +159,6 @@ public class ExtraChamber2 extends OpMode {
                 }
                 break;
             case 1:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
                 if(!follower.isBusy() && slides.getCurrentLeftPosition() > slides.targetPosition - 10) {
                     slides.setTargetPosition(1500);
                     setPathState(2);
@@ -179,34 +179,31 @@ public class ExtraChamber2 extends OpMode {
                     if (pathTimer.getElapsedTimeSeconds() > 4){
                         frontR.setPosition(0.65);
                         frontL.setPosition(0.40);
+                        setPathState(4);
                     }
-                }
-                if(frontR.getPosition() == 0.65){
-                    setPathState(4);
                 }
                 break;
             case 4:
-                if(frontR.getPosition() == 0.65){
-                    follower.followPath(grabSpline2, true);
-                    setPathState(5);
-                }
+                follower.followPath(grabSpline2, true);
+                setPathState(5);
                 break;
             case 5:
-                if(follower.getPose().getHeading() > Math.toRadians(120)){
+                if(pathTimer.getElapsedTimeSeconds() > 3){
                     frontR.setPosition(0);
                     frontL.setPosition(1);
-                    setPathState(6);
                 }
                 if(frontR.getPosition() == 0){
-                    setPathState(4);
+                    setPathState(6);
                 }
                 break;
             case 6:
-                follower.followPath(grabSpline3, true);
-                setPathState(7);
+                if(pathTimer.getElapsedTimeSeconds() > 2){
+                    follower.followPath(grabSpline3, true);
+                    setPathState(7);
+                }
                 break;
             case 7:
-                if(pathTimer.getElapsedTimeSeconds() > 2){
+                if(pathTimer.getElapsedTimeSeconds() > 1){
                     frontR.setPosition(0.65);
                     frontL.setPosition(0.40);
                     setPathState(8);
@@ -217,16 +214,17 @@ public class ExtraChamber2 extends OpMode {
                 setPathState(9);
                 break;
             case 9:
-                if(pathTimer.getElapsedTimeSeconds() > 1){
+                if(pathTimer.getElapsedTimeSeconds() > 0){
                     frontR.setPosition(1);
                     frontL.setPosition(0);
+                }
+                if(pathTimer.getElapsedTimeSeconds() > 0.5){
+                    extendR.setPosition(1);
+                    extendL.setPosition(0);
 
-                    if(pathTimer.getElapsedTimeSeconds() > 1.5){
-                        extendR.setPosition(1);
-                        extendL.setPosition(0);
-
-                        slides.setTargetPosition(455);
-                    }
+                    slides.setTargetPosition(455);
+                }
+                if(pathTimer.getElapsedTimeSeconds() > 3 && extendR.getPosition() == 1){
                     follower.followPath(grabFirstSpecimen, true);
                     setPathState(10);
                 }

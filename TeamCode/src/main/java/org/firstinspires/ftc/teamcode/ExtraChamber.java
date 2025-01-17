@@ -70,16 +70,16 @@ public class ExtraChamber extends OpMode {
     private final Pose pushSecondControl = new Pose(155, 3);
     private final Pose pushSecond =  new Pose(10, 3);
     private final Pose grabSplineControl = new Pose(30, 25);
-    private final Pose grabForwardPose = new Pose(-2, 24);
+    private final Pose grabForwardPose = new Pose(-5, 24);
     private final Pose grabPose = new Pose(5, 24, Math.toRadians(0));
     private final Pose scoreFirstPose = new Pose(40, 72, Math.toRadians(180));
     private final Pose scoreSecondPose = new Pose(41, 69, Math.toRadians(180));
     private final Pose safetyScore = new Pose(37, 69, Math.toRadians(180));
     private final Pose scoreThirdPose = new Pose(40, 67, Math.toRadians(180));
-    private final Pose parkPose = new Pose(8, 24);
+    private final Pose parkPose = new Pose(5, 5);
     /* These are our Paths and PathChains that we will define in buildPaths() */
     private Path scorePreload;
-    private PathChain pushSpline, pushBlocks, grabSpline, scoreFirst, grabSecond, scoreSecond, grabThird, scoreThird, park;
+    private PathChain pushSpline, pushBlocks, grabSpline, scoreFirst, grabSecond, scoreSecond, grabThird, scoreThird, park, parkGood;
     /** Build the paths for the auto (adds, for example, constant/linear headings while doing paths)
      * It is necessary to do this so that all the paths are built before the auto starts. **/
     public void buildPaths() {
@@ -156,6 +156,9 @@ public class ExtraChamber extends OpMode {
                 .setConstantHeadingInterpolation(Math.toRadians(180))
                 .addPath(new BezierLine(new Point(safetyScore), new Point(parkPose)))
                 .setConstantHeadingInterpolation(180)
+                .build();
+        parkGood = follower.pathBuilder()
+                .addPath(new BezierLine(new Point(grabForwardPose), new Point(parkPose)))
                 .build();
 
     }
@@ -253,7 +256,7 @@ public class ExtraChamber extends OpMode {
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
                 if(!follower.isBusy() && slides.getCurrentLeftPosition() > slides.targetPosition - 10) {
                     slides.setTargetPosition(1500);
-                    setPathState(16);
+                    setPathState(12);
                 }
                 break;
             case 12:
@@ -267,8 +270,8 @@ public class ExtraChamber extends OpMode {
             case 13:
                 if(pathTimer.getElapsedTimeSeconds() > 3 && slides.getCurrentLeftPosition() > slides.targetPosition - 10){
                     closeBack();
-                    slides.setTargetPosition(1800);
-                    setPathState(14);
+                    slides.setTargetPosition(600); //should be 1800 normally
+                    setPathState(16);
                 }
                 break;
             case 14:
@@ -284,10 +287,10 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 16:
-                if(slides.getCurrentLeftPosition() < 1550){
-                    openBack();
+                if(slides.getCurrentLeftPosition() > 580){ //normally < 1550
+                    //openBack();
                     slides.setTargetPosition(0);
-                    follower.followPath(park, false);
+                    follower.followPath(parkGood, false);
                     setPathState(17);
                 }
                 break;

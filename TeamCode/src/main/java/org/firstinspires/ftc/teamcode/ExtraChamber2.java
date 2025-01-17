@@ -48,21 +48,12 @@ public class ExtraChamber2 extends OpMode {
      * It is used by the pathUpdate method. */
     private int pathState;
 
-    /* Create and Define Poses + Paths
-     * Poses are built with three constructors: x, y, and heading (in Radians).
-     * Pedro uses 0 - 144 for x and y, with 0, 0 being on the bottom left.
-     * (For Into the Deep, this would be Blue Observation Zone (0,0) to Red Observation Zone (144,144).)
-     * Even though Pedro uses a different coordinate system than RR, you can convert any roadrunner pose by adding +72 both the x and y.
-     * This visualizer is very easy to use to find and create paths/pathchains/poses: <https://pedro-path-generator.vercel.app/>
-     * Lets assume our robot is 18 by 18 inches
-     * Lets assume the Robot is facing the human player and we want to score in the bucket */
-
     /** Start Pose of our robot */
     private final Pose startPose = new Pose(9, 70, Math.toRadians(180));
     private final Pose scorePrePose = new Pose(39,75, Math.toRadians(180));
     private final Pose grabFirstSample = new Pose(10, 12);
     private final Pose grabFirstSample2 = new Pose(16.5, 12);
-    private final Pose turnHelper1 = new Pose(21, 8);
+    private final Pose turnHelper1 = new Pose(15, 8, Math.toRadians((135)));
     private final Pose grabSecondSample = new Pose(16.5, 2);
     private final Pose turnHelper2 = new Pose(21, 8);
     private final Pose grabForwardPose = new Pose(-5, 24);
@@ -88,7 +79,7 @@ public class ExtraChamber2 extends OpMode {
                 .build();
         grabSpline2 = follower.pathBuilder()
                 .addPath(new BezierLine(new Point(grabFirstSample2), new Point(turnHelper1)))
-                .setConstantHeadingInterpolation(Math.toRadians((150)))
+                .setLinearHeadingInterpolation(grabFirstSample2.getHeading(), turnHelper1.getHeading())
                 .build();
         grabSpline3 = follower.pathBuilder()
                 .addPath(new BezierLine(new Point(turnHelper1), new Point(grabSecondSample)))

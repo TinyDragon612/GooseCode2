@@ -229,8 +229,8 @@ public class TeleOpMain extends LinearOpMode {
                         frontL.setPosition(0.25);
 
                     }else{
-                        frontR.setPosition(0.65);
-                        frontL.setPosition(0.40);
+                        frontR.setPosition(0.60);
+                        frontL.setPosition(0.45);
                     }
                     if(notPressed>20){
                         clawState = !clawState;

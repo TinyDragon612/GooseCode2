@@ -339,15 +339,6 @@ public class TeleOpMain extends LinearOpMode {
     public void reset(){
         right.setPower(0);
         left.setPower(0);
-
-        right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        right.setTargetPosition(0);
-        left.setTargetPosition(0);
-
-        right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void waitforDrawer(DcMotor george) {

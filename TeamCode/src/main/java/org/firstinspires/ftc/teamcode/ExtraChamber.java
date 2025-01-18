@@ -62,21 +62,21 @@ public class ExtraChamber extends OpMode {
     private final Pose scorePrePose = new Pose(39,75, Math.toRadians(180));
     private final Pose pushSplineControl1 = new Pose(10.6, 35);
     private final Pose pushSplineEnd = new Pose(20, 26, Math.toRadians(0));
-    private final Pose returnFirst = new Pose(45,26);
-    private final Pose strafeFirst = new Pose(45, 15);
+    private final Pose returnFirst = new Pose(47,26);
+    private final Pose strafeFirst = new Pose(47, 15);
     private final Pose pushFirst = new Pose(16, 15);
-    private final Pose returnSecond = new Pose(45, 15);
-    private final Pose strafeSecond = new Pose(45, 3);
+    private final Pose returnSecond = new Pose(47, 15);
+    private final Pose strafeSecond = new Pose(47, 3);
     private final Pose pushSecondControl = new Pose(155, 3);
     private final Pose pushSecond =  new Pose(10, 3);
     private final Pose grabSplineControl = new Pose(30, 25);
     private final Pose grabForwardPose = new Pose(-5, 24);
     private final Pose grabPose = new Pose(5, 24, Math.toRadians(0));
-    private final Pose scoreFirstPose = new Pose(40, 72, Math.toRadians(180));
+    private final Pose scoreFirstPose = new Pose(41, 72, Math.toRadians(180));
     private final Pose scoreSecondPose = new Pose(41, 69, Math.toRadians(180));
     private final Pose safetyScore = new Pose(37, 69, Math.toRadians(180));
     private final Pose scoreThirdPose = new Pose(40, 67, Math.toRadians(180));
-    private final Pose parkPose = new Pose(5, 5);
+    private final Pose parkPose = new Pose(13, 5);
     /* These are our Paths and PathChains that we will define in buildPaths() */
     private Path scorePreload;
     private PathChain pushSpline, pushBlocks, grabSpline, scoreFirst, grabSecond, scoreSecond, grabThird, scoreThird, park, parkGood;
@@ -262,15 +262,15 @@ public class ExtraChamber extends OpMode {
             case 12:
                 if(slides.getCurrentLeftPosition() < 1550){
                     openBack();
-                    slides.setTargetPosition(450);
+                    slides.setTargetPosition(0);
                     follower.followPath(grabThird, true);
-                    setPathState(13);
+                    setPathState(16);
                 }
                 break;
             case 13:
                 if(pathTimer.getElapsedTimeSeconds() > 3 && slides.getCurrentLeftPosition() > slides.targetPosition - 10){
                     closeBack();
-                    slides.setTargetPosition(600); //should be 1800 normally
+                    slides.setTargetPosition(800); //should be 1800 normally
                     setPathState(16);
                 }
                 break;
@@ -287,20 +287,15 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 16:
-                if(slides.getCurrentLeftPosition() > 580){ //normally < 1550
+                if(slides.getCurrentLeftPosition() < 50){ //normally < 1550
                     //openBack();
-                    slides.setTargetPosition(0);
                     follower.followPath(parkGood, false);
                     setPathState(17);
                 }
                 break;
             case 17:
-                if(!follower.isBusy()){
-                    if(pathTimer.getElapsedTimeSeconds() > 2){
-                        slides.setPower(0);
-                    }
-                    setPathState(-1);
-                }
+                slides.setTargetPosition(0);
+                setPathState(-1);
                 break;
         }
     }

@@ -85,13 +85,13 @@ public class MotorMech2 {
         if(movement > 0 && byPower){
             setTargetPosition(3600, movement);
         }else if(movement < 0 && byPower){
-            setTargetPosition(0, -movement);
+            setTargetPosition(-100, -movement);
         }else if(byPower){
             setPower(0);
         }else if(movement > 3600){
             setTargetPosition(3600);
         }else if(movement < 0){
-            setTargetPosition(0);
+            setTargetPosition(-100);
         }else{
             setTargetPosition((int)movement);
         }

@@ -165,8 +165,8 @@ public class ExtraChamber2 extends OpMode {
                 break;
             case 3:
                 if(pathTimer.getElapsedTimeSeconds() > 3){
-                    extendR.setPosition(0.30);
-                    extendL.setPosition(0.70);
+                    extendR.setPosition(0.950);
+                    extendL.setPosition(0.050);
                     if (pathTimer.getElapsedTimeSeconds() > 4){
                         frontR.setPosition(0.65);
                         frontL.setPosition(0.40);

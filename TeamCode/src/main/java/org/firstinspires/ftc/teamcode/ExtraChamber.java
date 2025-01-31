@@ -176,6 +176,8 @@ public class ExtraChamber extends OpMode {
         switch (pathState) {
             case 0:
                 slides.setTargetPosition(1800);
+                extendL.setPosition(1);
+                extendR.setPosition(0);
                 if(pathTimer.getElapsedTimeSeconds() > 0.75) {
                     follower.followPath(scorePreload, true);
                     setPathState(1);

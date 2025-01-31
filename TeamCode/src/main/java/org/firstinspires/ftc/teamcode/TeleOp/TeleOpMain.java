@@ -113,8 +113,8 @@ public class TeleOpMain extends LinearOpMode {
                 
                 if (gamepad2.triangle) {
                     move(4000, false);
-                    extendR.setPosition(0.70);
-                    extendL.setPosition(0.30);// top basket good
+                    extendR.setPosition(0.950);
+                    extendL.setPosition(0.050);
                 } else if (gamepad2.circle) {
                     move(1825, false);
                 } else if (gamepad2.cross) {
@@ -161,13 +161,13 @@ public class TeleOpMain extends LinearOpMode {
 
                 //servos
                 if(gamepad2.dpad_up){
-                    extendR.setPosition(0.70);
-                    extendL.setPosition(0.30);
+                    extendR.setPosition(0.950);
+                    extendL.setPosition(0.050);
                 }
 
                 if(gamepad2.dpad_right){
-                    extendR.setPosition(0.85);
-                    extendL.setPosition(0.15);
+                    extendR.setPosition(0.965);
+                    extendL.setPosition(0.035);
                 }
 //in
                 if(gamepad2.dpad_down){

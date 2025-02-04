@@ -35,49 +35,49 @@ public class ServoTester extends LinearOpMode {
             while (opModeIsActive()) {
 
                 telemetry.addData("Status", "Running");
-                telemetry.addData("right: ", backR.getPosition());
-                telemetry.addData("left: ", backL.getPosition());
+                telemetry.addData("right: ", extendR.getPosition());
+                telemetry.addData("left: ", extendL.getPosition());
                 telemetry.update();
 
-//                if(gamepad1.dpad_up){
-//                    extendL.setPosition(1);
-//                }
-//
-//                if(gamepad1.dpad_down){
-//                    extendL.setPosition(0); // out position
-//                }
-//
-//                if(gamepad1.triangle){
-//                    extendR.setPosition(1); // out position
-//                }
-//
-//                if(gamepad1.cross){
-//                    extendR.setPosition(0);
-//                }
-//
-//                if(gamepad1.right_bumper){
-//                    extendR.setPosition(1);
-//                    extendL.setPosition(0);
-//
-//                }
-//
-//                if(gamepad1.left_bumper){
-//                    extendR.setPosition(0.70);
-//                    extendL.setPosition(0.30);
-//                }
-//
+                if(gamepad1.dpad_up){
+                    extendL.setPosition(1);
+                }
 
-                //BACK CLAWS
+                if(gamepad1.dpad_down){
+                    extendL.setPosition(0); // out position
+                }
+
+                if(gamepad1.triangle){
+                    extendR.setPosition(1); // out position
+                }
+
+                if(gamepad1.cross){
+                    extendR.setPosition(0);
+                }
+
                 if(gamepad1.right_bumper){
-                    backR.setPosition(1);
-                    backL.setPosition(0);
+                    extendR.setPosition(0);
+                    extendL.setPosition(1);
 
                 }
 
                 if(gamepad1.left_bumper){
-                    backR.setPosition(0.75);
-                    backL.setPosition(0.30);
+                    extendR.setPosition(0.05);
+                    extendL.setPosition(0.95);
                 }
+//
+
+//                //BACK CLAWS
+//                if(gamepad1.right_bumper){
+//                    backR.setPosition(1);
+//                    backL.setPosition(0);
+//
+//                }
+//
+//                if(gamepad1.left_bumper){
+//                    backR.setPosition(0.75);
+//                    backL.setPosition(0.30);
+//                }
 
 
 //                FRONT CLAWS

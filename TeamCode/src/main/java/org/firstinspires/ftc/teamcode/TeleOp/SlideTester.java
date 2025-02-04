@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
-@Disabled
+//@Disabled
 @TeleOp(name= "SlideTester", group="Linear Opmode")
 public class SlideTester extends LinearOpMode {
 

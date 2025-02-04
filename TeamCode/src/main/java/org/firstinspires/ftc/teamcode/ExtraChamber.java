@@ -59,7 +59,7 @@ public class ExtraChamber extends OpMode {
 
     /** Start Pose of our robot */
     private final Pose startPose = new Pose(9, 70, Math.toRadians(180));
-    private final Pose scorePrePose = new Pose(39,75, Math.toRadians(180));
+    private final Pose scorePrePose = new Pose(39,75, Math.toRadians(180)); //x=39
     private final Pose pushSplineControl1 = new Pose(10.6, 35);
     private final Pose pushSplineEnd = new Pose(20, 26, Math.toRadians(0));
     private final Pose returnFirst = new Pose(45,26);
@@ -234,9 +234,9 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 8:
-                if(slides.getCurrentLeftPosition() < 1550){
+                if(slides.getCurrentLeftPosition() < 1550 && pathTimer.getElapsedTimeSeconds() > 2){
                     openBack();
-                    slides.setTargetPosition(450);
+                    slides.setTargetPosition(455);
                     follower.followPath(grabSecond, true);
                     setPathState(9);
                 }
@@ -258,7 +258,7 @@ public class ExtraChamber extends OpMode {
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
                 if(!follower.isBusy() && slides.getCurrentLeftPosition() > slides.targetPosition - 10) {
                     slides.setTargetPosition(1500);
-                    setPathState(12);
+                    setPathState(16);
                 }
                 break;
             case 12:
@@ -289,7 +289,7 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 16:
-                if(slides.getCurrentLeftPosition() > 580){ //normally < 1550
+                if(slides.getCurrentLeftPosition() > 1550){ //normally < 1550 // then 580
                     //openBack();
                     slides.setTargetPosition(0);
                     follower.followPath(parkGood, false);

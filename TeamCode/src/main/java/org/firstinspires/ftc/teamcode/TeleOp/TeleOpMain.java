@@ -113,8 +113,8 @@ public class TeleOpMain extends LinearOpMode {
                 
                 if (gamepad2.triangle) {
                     move(4000, false);
-                    extendR.setPosition(0.950);
-                    extendL.setPosition(0.050);
+                    extendR.setPosition(0.965);
+                    extendL.setPosition(0.035);
                 } else if (gamepad2.circle) {
                     move(1825, false);
                 } else if (gamepad2.cross) {
@@ -128,6 +128,9 @@ public class TeleOpMain extends LinearOpMode {
                 }
                 else if(gamepad2.right_bumper){
                     move(600, false);
+
+                    backR.setPosition(1);
+                    backL.setPosition(0);
                 }
                 else if (gamepad1.cross){
                     move(600, false);
@@ -156,24 +159,38 @@ public class TeleOpMain extends LinearOpMode {
                 else if(!holding){
                     move(0, true);
                 }
+                else if(gamepad2.dpad_up){
+                    drawerTimer.reset();
+                    move(0, false);
+                    if(drawersDone(right, left) && drawerTimer.seconds() > 2){
+                        settle_slides();
+                    }
 
-                //OTHER GAMEPAD2 CONTROLS
-
-                //servos
-                if(gamepad2.dpad_up){
                     extendR.setPosition(0.950);
                     extendL.setPosition(0.050);
                 }
-
-                if(gamepad2.dpad_right){
+                else if(gamepad2.dpad_right){
                     extendR.setPosition(0.965);
                     extendL.setPosition(0.035);
                 }
-//in
-                if(gamepad2.dpad_down){
-                    extendR.setPosition(1);
-                    extendL.setPosition(0);
+                else if(gamepad2.dpad_down){
+                    move(300, false);
+
+                    if(right.getCurrentPosition() > 270){
+                        extendR.setPosition(1);
+                        extendL.setPosition(0);
+                    }
                 }
+                else if  (gamepad1.left_trigger > 0){
+                    move(1500, false);
+
+                    if(right.getCurrentPosition() < 1600){
+                        backR.setPosition(1);
+                        backL.setPosition(0);
+                    }
+                }
+
+                //OTHER GAMEPAD2 CONTROLS
 
                 //hanger
 
@@ -318,13 +335,6 @@ public class TeleOpMain extends LinearOpMode {
                 }
                 telemetry.addData("notpressed", notPressed);
 
-
-
-
-                if(gamepad1.left_trigger > 0){
-                    backR.setPosition(1);
-                    backL.setPosition(0);
-                }
 
                 if(gamepad1.right_trigger > 0){
                     backR.setPosition(0.73); //75

@@ -50,10 +50,10 @@ public class ExtraChamber2 extends OpMode {
 
     /** Start Pose of our robot */
     private final Pose startPose = new Pose(9, 70, Math.toRadians(180));
-    private final Pose scorePrePose = new Pose(39,75, Math.toRadians(180));
-    private final Pose grabFirstSample = new Pose(10, 12);
-    private final Pose grabFirstSample2 = new Pose(16.5, 12);
-    private final Pose turnHelper1 = new Pose(15, 8, Math.toRadians((135)));
+    private final Pose scorePrePose = new Pose(38,75, Math.toRadians(180));
+    private final Pose grabFirstSample = new Pose(20, 20);
+    private final Pose grabFirstSample2 = new Pose(20, 15);
+    private final Pose turnHelper1 = new Pose(19, 14, Math.toRadians((135)));
     private final Pose grabSecondSample = new Pose(16.5, 2);
     private final Pose turnHelper2 = new Pose(21, 8);
     private final Pose grabForwardPose = new Pose(-5, 24);
@@ -165,8 +165,8 @@ public class ExtraChamber2 extends OpMode {
                 break;
             case 3:
                 if(pathTimer.getElapsedTimeSeconds() > 3){
-                    extendR.setPosition(0.950);
-                    extendL.setPosition(0.050);
+                    extendR.setPosition(0.965);
+                    extendL.setPosition(0.035);
                     if (pathTimer.getElapsedTimeSeconds() > 4){
                         frontR.setPosition(0.65);
                         frontL.setPosition(0.40);

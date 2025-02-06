@@ -70,7 +70,7 @@ public class ExtraChamber extends OpMode {
     private final Pose pushSecondControl = new Pose(155, 3);
     private final Pose pushSecond =  new Pose(10, 3);
     private final Pose grabSplineControl = new Pose(30, 25);
-    private final Pose grabForwardPose = new Pose(-5, 24);
+    private final Pose grabForwardPose = new Pose(-3, 24); //THIS ONE HERE IS WHEN ITS GRABBING OFF THE WALL I THINK
     private final Pose grabPose = new Pose(5, 24, Math.toRadians(0));
     private final Pose scoreFirstPose = new Pose(40, 72, Math.toRadians(180));
     private final Pose scoreSecondPose = new Pose(41, 69, Math.toRadians(180));
@@ -122,6 +122,7 @@ public class ExtraChamber extends OpMode {
 //                .build();
         grabSpline = follower.pathBuilder()
                 .addPath(new BezierCurve(new Point(pushSecond), new Point(grabSplineControl), new Point(grabForwardPose)))
+                .setZeroPowerAccelerationMultiplier(8)
                 .setConstantHeadingInterpolation(0)
                 .build();
         scoreFirst = follower.pathBuilder()
@@ -141,6 +142,7 @@ public class ExtraChamber extends OpMode {
                 .setLinearHeadingInterpolation(scoreFirstPose.getHeading(), grabPose.getHeading())
                 .setPathEndTimeoutConstraint(500)
                 .addPath(new BezierLine(new Point(grabPose), new Point(grabForwardPose)))
+                .setZeroPowerAccelerationMultiplier(5)
                 .setConstantHeadingInterpolation(0)
                 .build();
         grabThird = follower.pathBuilder()
@@ -161,6 +163,8 @@ public class ExtraChamber extends OpMode {
                 .addPath(new BezierLine(new Point(grabForwardPose), new Point(parkPose)))
                 .build();
 
+
+
     }
 
     /** This switch is called continuously and runs the pathing, at certain points, it triggers the action state.
@@ -175,7 +179,7 @@ public class ExtraChamber extends OpMode {
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-                slides.setTargetPosition(1800);
+                slides.setTargetPosition(1850);
                 extendL.setPosition(1);
                 extendR.setPosition(0);
                 if(pathTimer.getElapsedTimeSeconds() > 0.75) {
@@ -214,9 +218,9 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 5:
-                if(pathTimer.getElapsedTimeSeconds() > 2 && slides.getCurrentLeftPosition() > slides.targetPosition - 10){
+                if(pathTimer.getElapsedTimeSeconds() > 2.5 && slides.getCurrentLeftPosition() > slides.targetPosition - 10){
                     closeBack();
-                    slides.setTargetPosition(1800);
+                    slides.setTargetPosition(1850);
                     setPathState(6);
                 }
                 break;
@@ -227,14 +231,13 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 7:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
                 if(!follower.isBusy() && slides.getCurrentLeftPosition() > slides.targetPosition - 10) {
                     slides.setTargetPosition(1500);
                     setPathState(8);
                 }
                 break;
             case 8:
-                if(slides.getCurrentLeftPosition() < 1550 && pathTimer.getElapsedTimeSeconds() > 2){
+                if(slides.getCurrentLeftPosition() < 1550 && pathTimer.getElapsedTimeSeconds() > 0.5){
                     openBack();
                     slides.setTargetPosition(455);
                     follower.followPath(grabSecond, true);
@@ -244,7 +247,7 @@ public class ExtraChamber extends OpMode {
             case 9:
                 if(pathTimer.getElapsedTimeSeconds() > 3 && slides.getCurrentLeftPosition() > slides.targetPosition - 10){
                     closeBack();
-                    slides.setTargetPosition(1800);
+                    slides.setTargetPosition(1850);
                     setPathState(10);
                 }
                 break;
@@ -255,14 +258,13 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 11:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
                 if(!follower.isBusy() && slides.getCurrentLeftPosition() > slides.targetPosition - 10) {
                     slides.setTargetPosition(1500);
                     setPathState(16);
                 }
                 break;
             case 12:
-                if(slides.getCurrentLeftPosition() < 1550){
+                if(slides.getCurrentLeftPosition() < 1550 && pathTimer.getElapsedTimeSeconds() > 0.5){
                     openBack();
                     slides.setTargetPosition(450);
                     follower.followPath(grabThird, true);
@@ -273,7 +275,7 @@ public class ExtraChamber extends OpMode {
                 if(pathTimer.getElapsedTimeSeconds() > 3 && slides.getCurrentLeftPosition() > slides.targetPosition - 10){
                     closeBack();
                     slides.setTargetPosition(600); //should be 1800 normally
-                    setPathState(16);
+                    setPathState(14);
                 }
                 break;
             case 14:
@@ -289,8 +291,8 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 16:
-                if(slides.getCurrentLeftPosition() > 1550){ //normally < 1550 // then 580
-                    //openBack();
+                if(slides.getCurrentLeftPosition() < 1550 && pathTimer.getElapsedTimeSeconds() > 0.5){ //normally < 1550 // then 580
+                    openBack();
                     slides.setTargetPosition(0);
                     follower.followPath(parkGood, false);
                     setPathState(17);
@@ -348,7 +350,11 @@ public class ExtraChamber extends OpMode {
 
     /** This method is called continuously after Init while waiting for "play". **/
     @Override
-    public void init_loop() {}
+    public void init_loop() {
+        telemetry.addData("Position", follower.getPose().toString());
+        telemetry.update();
+
+    }
 
     /** This method is called once at the start of the OpMode.
      * It runs all the setup actions, including building paths and starting the path system **/

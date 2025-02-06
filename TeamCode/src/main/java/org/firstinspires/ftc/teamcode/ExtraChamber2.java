@@ -51,6 +51,7 @@ public class ExtraChamber2 extends OpMode {
     /** Start Pose of our robot */
     private final Pose startPose = new Pose(9, 70, Math.toRadians(180));
     private final Pose scorePrePose = new Pose(38,75, Math.toRadians(180));
+    private final Pose offChamberHelper = new Pose(20,75, Math.toRadians(180));
     private final Pose grabFirstSample = new Pose(20, 20);
     private final Pose grabFirstSample2 = new Pose(20, 15);
     private final Pose turnHelper1 = new Pose(19, 14, Math.toRadians((135)));

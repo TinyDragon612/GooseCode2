@@ -246,8 +246,8 @@ public class TeleOpMain extends LinearOpMode {
                         frontL.setPosition(0.25);
 
                     }else{
-                        frontR.setPosition(0.60);
-                        frontL.setPosition(0.45);
+                        frontR.setPosition(0.58);
+                        frontL.setPosition(0.47);
                     }
                     if(notPressed>20){
                         clawState = !clawState;
@@ -347,8 +347,20 @@ public class TeleOpMain extends LinearOpMode {
     }
 
     public void reset(){
+        right.setMotorEnable();
+        left.setMotorEnable();
+
+        left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         right.setPower(0);
         left.setPower(0);
+
+        right.setTargetPosition(0);
+        left.setTargetPosition(0);
+
+        right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void waitforDrawer(DcMotor george) {
@@ -410,12 +422,12 @@ public class TeleOpMain extends LinearOpMode {
 
     public void move(double movement, boolean byPower){
         holding = false;
-        right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         if(movement > 0 && byPower){
             setTargetPosition(4000, movement);
         }else if(movement < 0 && byPower){
-            setTargetPosition(0, -movement);
+            setTargetPosition(-4000, -movement); //0
         }else if(byPower){
             holding = true;
             setTargetPosition(right.getCurrentPosition(), 0.5);

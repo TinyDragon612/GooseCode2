@@ -70,7 +70,7 @@ public class ExtraChamber extends OpMode {
     private final Pose pushSecondControl = new Pose(155, 3);
     private final Pose pushSecond =  new Pose(10, 3);
     private final Pose grabSplineControl = new Pose(30, 25);
-    private final Pose grabForwardPose = new Pose(-3, 24); //THIS ONE HERE IS WHEN ITS GRABBING OFF THE WALL I THINK
+    private final Pose grabForwardPose = new Pose(-4, 24); //THIS ONE HERE IS WHEN ITS GRABBING OFF THE WALL I THINK
     private final Pose grabPose = new Pose(5, 24, Math.toRadians(0));
     private final Pose scoreFirstPose = new Pose(40, 72, Math.toRadians(180));
     private final Pose scoreSecondPose = new Pose(41, 69, Math.toRadians(180));
@@ -84,6 +84,7 @@ public class ExtraChamber extends OpMode {
      * It is necessary to do this so that all the paths are built before the auto starts. **/
     public void buildPaths() {
         scorePreload = new Path(new BezierLine(new Point(startPose), new Point(scorePrePose)));
+        scorePreload.setZeroPowerAccelerationMultiplier(7);
         scorePreload.setConstantHeadingInterpolation(Math.toRadians(180));
 
         pushSpline = follower.pathBuilder()
@@ -218,7 +219,7 @@ public class ExtraChamber extends OpMode {
                 }
                 break;
             case 5:
-                if(pathTimer.getElapsedTimeSeconds() > 2.5 && slides.getCurrentLeftPosition() > slides.targetPosition - 10){
+                if(pathTimer.getElapsedTimeSeconds() > 3 && slides.getCurrentLeftPosition() > slides.targetPosition - 10){
                     closeBack();
                     slides.setTargetPosition(1850);
                     setPathState(6);
@@ -351,9 +352,8 @@ public class ExtraChamber extends OpMode {
     /** This method is called continuously after Init while waiting for "play". **/
     @Override
     public void init_loop() {
-        telemetry.addData("Position", follower.getPose().toString());
+        telemetry.addData("Position", follower.getPose());
         telemetry.update();
-
     }
 
     /** This method is called once at the start of the OpMode.

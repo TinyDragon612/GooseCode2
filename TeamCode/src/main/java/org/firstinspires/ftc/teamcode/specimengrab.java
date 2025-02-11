@@ -53,42 +53,33 @@ public class specimengrab extends OpMode {
 
 
     /** Grabbing the specimen from the observation zone */
-    private final Pose grabBackPose = new Pose(20, 32, Math.toRadians(0));
-    private final Pose grabPose = new Pose(10.5, 32, Math.toRadians(0));
-
-
-    /** Poses for pushing the samples */
-    private final Pose offChamberHelper = new Pose(0, 30);
-    private final Pose pushSplineControl1 = new Pose(10.6, 35);
-    private final Pose pushPose1 = new Pose(15, 50, Math.toRadians(-57));
-    private final Pose pushForwardPose1 = new Pose(11, 49, Math.toRadians(-110)); //26, -245 rad
-    private final Pose pushPose2 = new Pose(15, 43, Math.toRadians(-57));
-    private final Pose pushForwardPose2 = new Pose(11, 42, Math.toRadians(-110));
-    private final Pose pushPose3 = new Pose(15, 30, Math.toRadians(-57));
-    private final Pose pushForwardPose3 = new Pose(11, 40, Math.toRadians(-110));
-    private final Pose moveBackPose = new Pose(20, 20, Math.toRadians(0));
-
-
-//    private final Pose grabBackPose = new Pose(15, 32, Math.toRadians(0));
-//    private final Pose grabPose = new Pose(0.5, 32, Math.toRadians(0));
+//    private final Pose grabBackPose = new Pose(20, 32, Math.toRadians(0));
+//    private final Pose grabPose = new Pose(10.5, 32, Math.toRadians(0));
+//
 //
 //    /** Poses for pushing the samples */
 //    private final Pose offChamberHelper = new Pose(0, 30);
 //    private final Pose pushSplineControl1 = new Pose(10.6, 35);
-//    private final Pose pushPose1 = new Pose(15, 43, Math.toRadians(-57));
-//    private final Pose pushForwardPose1 = new Pose(11, 42, Math.toRadians(-110)); //26, -245 rad
-//    private final Pose pushPose2 = new Pose(15, 30, Math.toRadians(-57));
-//    private final Pose pushForwardPose2 = new Pose(11, 29, Math.toRadians(-110));
-//    private final Pose pushPose3 = new Pose(15, 17, Math.toRadians(-57));
-//    private final Pose pushForwardPose3 = new Pose(11, 30, Math.toRadians(-110));
+//    private final Pose pushPose1 = new Pose(15, 50, Math.toRadians(-57));
+//    private final Pose pushForwardPose1 = new Pose(11, 49, Math.toRadians(-110)); //26, -245 rad
+//    private final Pose pushPose2 = new Pose(15, 43, Math.toRadians(-57));
+//    private final Pose pushForwardPose2 = new Pose(11, 42, Math.toRadians(-110));
+//    private final Pose pushPose3 = new Pose(15, 30, Math.toRadians(-57));
+//    private final Pose pushForwardPose3 = new Pose(11, 40, Math.toRadians(-110));
 //    private final Pose moveBackPose = new Pose(20, 20, Math.toRadians(0));
 
-    /** Pose for maneuvering around the submersible */
-    private final Pose maneuverPose = new Pose(58, 36.5, Math.toRadians(0));
-    /** Maneuver Control Pose for our robot, this is used to manipulate the bezier curve that we will create for the maneuver.
-     * The Robot will not go to this pose, it is used a control point for our bezier curve. */
-    private final Pose maneuverControlPose = new Pose(13, 25, Math.toRadians(0));
 
+    private final Pose grabBackPose = new Pose(15, 32, Math.toRadians(0));
+    private final Pose grabPose = new Pose(0.5, 32, Math.toRadians(0));
+
+    /** Poses for pushing the samples */
+    private final Pose pushSplineControl1 = new Pose(10.6, 20);
+    private final Pose pushPose1 = new Pose(15, 40, Math.toRadians(-57));
+    private final Pose pushForwardPose1 = new Pose(11, 42, Math.toRadians(-110)); //26, -245 rad
+    private final Pose pushPose2 = new Pose(16, 30, Math.toRadians(-57));
+    private final Pose pushForwardPose2 = new Pose(11, 29, Math.toRadians(-110));
+    private final Pose pushPose3 = new Pose(15, 22, Math.toRadians(-57));
+    private final Pose pushForwardPose3 = new Pose(11, 30, Math.toRadians(-110));
 
     private final Pose parkPose = new Pose(12, 30, Math.toRadians(0));
 
@@ -148,11 +139,6 @@ public class specimengrab extends OpMode {
                 .addPath(new BezierLine(new Point(pushPose3), new Point(pushForwardPose3)))
                 .setLinearHeadingInterpolation(pushPose3.getHeading(), pushForwardPose3.getHeading(), 0.5)
                 .build();
-
-
-
-
-
 
         /* This is our grabSpecimen1 PathChain. We are using a single path with a BezierLine, which is a straight line. */
         grabSpecimen1 = follower.pathBuilder()
@@ -229,6 +215,8 @@ public class specimengrab extends OpMode {
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
+                frontR.setPosition(0);
+                frontL.setPosition(1);
                 slides.setTargetPosition(1850);
                 extendL.setPosition(1);
                 extendR.setPosition(0);
@@ -258,36 +246,37 @@ public class specimengrab extends OpMode {
                 break;
             case 2:
                 if(!follower.isBusy()) {
-                    if(pathTimer.getElapsedTimeSeconds() > 1.5) {
-                        extendR.setPosition(0.965);
-                        extendL.setPosition(0.035);
-                    }
-                    if(pathTimer.getElapsedTimeSeconds() > 1.7) {
+                    extendR.setPosition(0.965);
+                    extendL.setPosition(0.035);
+                    if(pathTimer.getElapsedTimeSeconds() > 1) {
                         frontR.setPosition(0.65);
                         frontL.setPosition(0.40);
                     }
-                    if(pathTimer.getElapsedTimeSeconds() > 4) {
+                    if(pathTimer.getElapsedTimeSeconds() > 2.5) {
                         follower.followPath(moveFirstBlockNet, true);
                         setPathState(3);
                     }
                 }
                 break;
             case 3:
-                if(!follower.isBusy()) {
+                if(!(follower.isBusy())) {
                     frontR.setPosition(0);
                     frontL.setPosition(1);
-                    follower.followPath(moveSecondBlock, true);
-                    setPathState(4);
-
+                    if(pathTimer.getElapsedTimeSeconds() > 1.5) {
+                        follower.followPath(moveSecondBlock, true);
+                        setPathState(4);
+                    }
                 }
                 break;
             case 4:
                 if(!follower.isBusy()) {
-                    if(pathTimer.getElapsedTimeSeconds() > 1.7) {
+                    if(pathTimer.getElapsedTimeSeconds() > 1){
                         frontR.setPosition(0.65);
                         frontL.setPosition(0.40);
+                    }
+                    if(pathTimer.getElapsedTimeSeconds() > 1.7) {
                         follower.followPath(moveSecondBlockNet, true);
-                        setPathState(5);
+                        setPathState(7);
                     }
                 }
                 break;
@@ -295,8 +284,10 @@ public class specimengrab extends OpMode {
                 if(!follower.isBusy()) {
                     frontR.setPosition(0);
                     frontL.setPosition(1);
-                    follower.followPath(moveThirdBlock, true);
-                    setPathState(6);
+                    if(pathTimer.getElapsedTimeSeconds() > 1.5) {
+                        follower.followPath(moveThirdBlock, true);
+                        setPathState(4);
+                    }
 
                 }
                 break;
@@ -305,8 +296,10 @@ public class specimengrab extends OpMode {
                     if(pathTimer.getElapsedTimeSeconds() > 1.9) {
                         frontR.setPosition(0.65);
                         frontL.setPosition(0.40);
-                        follower.followPath(moveThirdBlockNet, true);
-                        setPathState(7);
+                        if(pathTimer.getElapsedTimeSeconds() > 1.5) {
+                            follower.followPath(moveThirdBlockNet, true);
+                            setPathState(7);
+                        }
                     }
                 }
                 break;
@@ -320,7 +313,6 @@ public class specimengrab extends OpMode {
                         follower.followPath(grabSpecimen1, true);
                         setPathState(8);
                     }
-
                 }
                 break;
             case 8:

@@ -91,7 +91,7 @@ public class MotorMech2 {
         }else if(movement > 3600){
             setTargetPosition(3600);
         }else if(movement < 0){
-            setTargetPosition(-100);
+            setTargetPosition(-4000); //-100
         }else{
             setTargetPosition((int)movement);
         }
